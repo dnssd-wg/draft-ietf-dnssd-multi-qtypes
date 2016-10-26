@@ -4,12 +4,12 @@
 
 DNSEXT Working Group                                           R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                          April 13, 2016
-Expires: October 15, 2016
+Intended status: Standards Track                        October 26, 2016
+Expires: April 29, 2017
 
 
                           DNS Multiple QTYPEs
-                  draft-bellis-dnsext-multi-qtypes-02
+                  draft-bellis-dnsext-multi-qtypes-03
 
 Abstract
 
@@ -32,7 +32,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on October 15, 2016.
+   This Internet-Draft will expire on April 29, 2017.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Bellis                  Expires October 15, 2016                [Page 1]
+Bellis                   Expires April 29, 2017                 [Page 1]
 
-Internet-Draft             DNS Multiple QTYPEs                April 2016
+Internet-Draft             DNS Multiple QTYPEs              October 2016
 
 
 Table of Contents
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Bellis                  Expires October 15, 2016                [Page 2]
+Bellis                   Expires April 29, 2017                 [Page 2]
 
-Internet-Draft             DNS Multiple QTYPEs                April 2016
+Internet-Draft             DNS Multiple QTYPEs              October 2016
 
 
 2.  Terminology used in this document
@@ -158,21 +158,21 @@ Internet-Draft             DNS Multiple QTYPEs                April 2016
    clear (0) in a query and set (1) in a response.
 
    QTCOUNT: a 3 bit field with range 0 .. 7 specifying the number of QT
-   fields to follow.
+   fields to follow.  NB: Whilst the QTCOUNT could in theory be
+   calculated based on the OPTION-LENGTH field, having it explicitly
+   specified ensures a sensible constraint its value.
 
 
 
 
-
-
-Bellis                  Expires October 15, 2016                [Page 3]
+Bellis                   Expires April 29, 2017                 [Page 3]
 
-Internet-Draft             DNS Multiple QTYPEs                April 2016
+Internet-Draft             DNS Multiple QTYPEs              October 2016
 
 
    QTn: a 2 byte field (MSB first) specifying a DNS RR type.  The RR
    type MUST be for a real resource record, and MUST NOT refer to a
-   pseudo RR type such as "OPT", "IXFR", "TSIG", etc.
+   pseudo RR type such as "OPT", "IXFR", "TSIG", "*", etc.
 
 3.2.  Response Generation
 
@@ -221,9 +221,9 @@ Internet-Draft             DNS Multiple QTYPEs                April 2016
 
 
 
-Bellis                  Expires October 15, 2016                [Page 4]
+Bellis                   Expires April 29, 2017                 [Page 4]
 
-Internet-Draft             DNS Multiple QTYPEs                April 2016
+Internet-Draft             DNS Multiple QTYPEs              October 2016
 
 
 3.2.2.  Client Side Processing
@@ -265,7 +265,7 @@ Internet-Draft             DNS Multiple QTYPEs                April 2016
 
 5.  IANA Considerations
 
-   IANA is requested to assign a new value in the DNS EDNS0 Options
+   IANA is requested to assign a new value in the DNS EDNS0 Option Codes
    registry.
 
 6.  Acknowledgements
@@ -277,9 +277,9 @@ Internet-Draft             DNS Multiple QTYPEs                April 2016
 
 
 
-Bellis                  Expires October 15, 2016                [Page 5]
+Bellis                   Expires April 29, 2017                 [Page 5]
 
-Internet-Draft             DNS Multiple QTYPEs                April 2016
+Internet-Draft             DNS Multiple QTYPEs              October 2016
 
 
 7.  Normative References
@@ -333,4 +333,4 @@ Author's Address
 
 
 
-Bellis                  Expires October 15, 2016                [Page 6]
+Bellis                   Expires April 29, 2017                 [Page 6]

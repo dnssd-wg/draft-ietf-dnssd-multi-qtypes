@@ -1,7 +1,7 @@
 ---
 title: DNS Multiple QTYPEs
-docname: draft-bellis-dnsext-multi-qtypes-02
-date: 2016-04
+docname: draft-bellis-dnsext-multi-qtypes-03
+date: 2016-10
 
 ipr: trust200902
 area: Internet
@@ -110,11 +110,13 @@ QTD: this bit indicates the direction of the packet.  It MUST be clear
 (0) in a query and set (1) in a response.
 
 QTCOUNT: a 3 bit field with range 0 .. 7 specifying the number of QT
-fields to follow.
+fields to follow.  NB: Whilst the QTCOUNT could in theory be calculated
+based on the OPTION-LENGTH field, having it explicitly specified ensures
+a sensible constraint its value.
 
 QTn: a 2 byte field (MSB first) specifying a DNS RR type.  The RR type
 MUST be for a real resource record, and MUST NOT refer to a pseudo RR
-type such as "OPT", "IXFR", "TSIG", etc.
+type such as "OPT", "IXFR", "TSIG", "*", etc.
 
 ## Response Generation
 
@@ -196,7 +198,7 @@ denial of service attack.
 
 # IANA Considerations
 
-IANA is requested to assign a new value in the DNS EDNS0 Options
+IANA is requested to assign a new value in the DNS EDNS0 Option Codes
 registry.
 
 # Acknowledgements
