@@ -4,8 +4,8 @@
 
 DNSEXT Working Group                                           R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                        October 26, 2016
-Expires: April 29, 2017
+Intended status: Standards Track                            October 2016
+Expires: April 4, 2017
 
 
                           DNS Multiple QTYPEs
@@ -32,7 +32,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 29, 2017.
+   This Internet-Draft will expire on April 4, 2017.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Bellis                   Expires April 29, 2017                 [Page 1]
+Bellis                    Expires April 4, 2017                 [Page 1]
 
 Internet-Draft             DNS Multiple QTYPEs              October 2016
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Bellis                   Expires April 29, 2017                 [Page 2]
+Bellis                    Expires April 4, 2017                 [Page 2]
 
 Internet-Draft             DNS Multiple QTYPEs              October 2016
 
@@ -165,7 +165,7 @@ Internet-Draft             DNS Multiple QTYPEs              October 2016
 
 
 
-Bellis                   Expires April 29, 2017                 [Page 3]
+Bellis                    Expires April 4, 2017                 [Page 3]
 
 Internet-Draft             DNS Multiple QTYPEs              October 2016
 
@@ -187,7 +187,7 @@ Internet-Draft             DNS Multiple QTYPEs              October 2016
    this option is unsupported.
 
    The server SHOULD attempt to return any resource records known to it
-   that match the additional (QTYPE, QCLASS, QTn) tuples.  These records
+   that match the additional (QNAME, QTn, QCLASS) tuples.  These records
    MUST be returned in the Answer Section of the response, but the
    answer for the primary QTYPE from the Question Section MUST be
    included first.
@@ -221,7 +221,7 @@ Internet-Draft             DNS Multiple QTYPEs              October 2016
 
 
 
-Bellis                   Expires April 29, 2017                 [Page 4]
+Bellis                    Expires April 4, 2017                 [Page 4]
 
 Internet-Draft             DNS Multiple QTYPEs              October 2016
 
@@ -277,7 +277,7 @@ Internet-Draft             DNS Multiple QTYPEs              October 2016
 
 
 
-Bellis                   Expires April 29, 2017                 [Page 5]
+Bellis                    Expires April 4, 2017                 [Page 5]
 
 Internet-Draft             DNS Multiple QTYPEs              October 2016
 
@@ -333,4 +333,4 @@ Author's Address
 
 
 
-Bellis                   Expires April 29, 2017                 [Page 6]
+Bellis                    Expires April 4, 2017                 [Page 6]

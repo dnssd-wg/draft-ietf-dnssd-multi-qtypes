@@ -160,7 +160,7 @@ in a response is zero the client MUST treat the response as if this
 option is unsupported.</t>
 
 <t>The server SHOULD attempt to return any resource records known to it
-that match the additional (QTYPE, QCLASS, QTn) tuples.  These records
+that match the additional (QNAME, QTn, QCLASS) tuples.  These records
 MUST be returned in the Answer Section of the response, but the answer
 for the primary QTYPE from the Question Section MUST be included first.</t>
 
