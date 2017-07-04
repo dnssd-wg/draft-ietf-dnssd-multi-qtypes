@@ -1,7 +1,6 @@
 ---
 title: DNS Multiple QTYPEs
-docname: draft-bellis-dnsext-multi-qtypes-03
-date: 2016-10
+docname: draft-bellis-dnsext-multi-qtypes-04
 
 ipr: trust200902
 area: Internet
@@ -69,8 +68,10 @@ TODO: why not "ANY" ?
 # Terminology used in this document
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-"SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-document are to be interpreted as described in {{!RFC2119}}.
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+"OPTIONAL" in this document are to be interpreted as described in BCP 14
+{{!RFC2119}} {{!RFC8174}} when, and only when, they appear in all
+capitals, as shown here.
 
 # Description
 

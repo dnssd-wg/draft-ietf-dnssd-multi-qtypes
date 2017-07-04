@@ -4,12 +4,12 @@
 
 DNSEXT Working Group                                           R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                            October 2016
-Expires: April 4, 2017
+Intended status: Standards Track                           July 04, 2017
+Expires: January 5, 2018
 
 
                           DNS Multiple QTYPEs
-                  draft-bellis-dnsext-multi-qtypes-03
+                  draft-bellis-dnsext-multi-qtypes-04
 
 Abstract
 
@@ -32,11 +32,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 4, 2017.
+   This Internet-Draft will expire on January 5, 2018.
 
 Copyright Notice
 
-   Copyright (c) 2016 IETF Trust and the persons identified as the
+   Copyright (c) 2017 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Bellis                    Expires April 4, 2017                 [Page 1]
+Bellis                   Expires January 5, 2018                [Page 1]
 
-Internet-Draft             DNS Multiple QTYPEs              October 2016
+Internet-Draft             DNS Multiple QTYPEs                 July 2017
 
 
 Table of Contents
@@ -70,7 +70,7 @@ Table of Contents
        3.2.3.  DNSSEC  . . . . . . . . . . . . . . . . . . . . . . .   5
    4.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
-   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   5
+   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
    7.  Normative References  . . . . . . . . . . . . . . . . . . . .   6
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .   6
 
@@ -109,16 +109,18 @@ Table of Contents
 
 
 
-Bellis                    Expires April 4, 2017                 [Page 2]
+Bellis                   Expires January 5, 2018                [Page 2]
 
-Internet-Draft             DNS Multiple QTYPEs              October 2016
+Internet-Draft             DNS Multiple QTYPEs                 July 2017
 
 
 2.  Terminology used in this document
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-   document are to be interpreted as described in [RFC2119].
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in BCP
+   14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
 
 3.  Description
 
@@ -159,16 +161,17 @@ Internet-Draft             DNS Multiple QTYPEs              October 2016
 
    QTCOUNT: a 3 bit field with range 0 .. 7 specifying the number of QT
    fields to follow.  NB: Whilst the QTCOUNT could in theory be
+
+
+
+
+Bellis                   Expires January 5, 2018                [Page 3]
+
+Internet-Draft             DNS Multiple QTYPEs                 July 2017
+
+
    calculated based on the OPTION-LENGTH field, having it explicitly
    specified ensures a sensible constraint its value.
-
-
-
-
-Bellis                    Expires April 4, 2017                 [Page 3]
-
-Internet-Draft             DNS Multiple QTYPEs              October 2016
-
 
    QTn: a 2 byte field (MSB first) specifying a DNS RR type.  The RR
    type MUST be for a real resource record, and MUST NOT refer to a
@@ -214,17 +217,17 @@ Internet-Draft             DNS Multiple QTYPEs              October 2016
    attempt to fill its positive and negative caches with all of the
    specified RR types before returning its response to the client.
 
+
+
+
+
+Bellis                   Expires January 5, 2018                [Page 4]
+
+Internet-Draft             DNS Multiple QTYPEs                 July 2017
+
+
    TODO: is there a case for mandatory answers, i.e. the client saying I
    _really_ want all these?
-
-
-
-
-
-Bellis                    Expires April 4, 2017                 [Page 4]
-
-Internet-Draft             DNS Multiple QTYPEs              October 2016
-
 
 3.2.2.  Client Side Processing
 
@@ -268,19 +271,22 @@ Internet-Draft             DNS Multiple QTYPEs              October 2016
    IANA is requested to assign a new value in the DNS EDNS0 Option Codes
    registry.
 
+
+
+
+
+
+
+Bellis                   Expires January 5, 2018                [Page 5]
+
+Internet-Draft             DNS Multiple QTYPEs                 July 2017
+
+
 6.  Acknowledgements
 
    The author wishes to thank the following for their feedback and
    reviews during the initial development of this document: Michael
    Graff, Olafur Gudmundsson, Matthijs Mekking, Paul Vixie.
-
-
-
-
-Bellis                    Expires April 4, 2017                 [Page 5]
-
-Internet-Draft             DNS Multiple QTYPEs              October 2016
-
 
 7.  Normative References
 
@@ -312,7 +318,25 @@ Internet-Draft             DNS Multiple QTYPEs              October 2016
               RFC6891, April 2013,
               <http://www.rfc-editor.org/info/rfc6891>.
 
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <http://www.rfc-editor.org/info/rfc8174>.
+
 Author's Address
+
+
+
+
+
+
+
+
+
+
+Bellis                   Expires January 5, 2018                [Page 6]
+
+Internet-Draft             DNS Multiple QTYPEs                 July 2017
+
 
    Ray Bellis
    Internet Systems Consortium, Inc.
@@ -333,4 +357,36 @@ Author's Address
 
 
 
-Bellis                    Expires April 4, 2017                 [Page 6]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Bellis                   Expires January 5, 2018                [Page 7]
