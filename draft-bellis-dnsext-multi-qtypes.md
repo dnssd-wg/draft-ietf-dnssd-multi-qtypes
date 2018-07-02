@@ -1,6 +1,6 @@
 ---
 title: DNS Multiple QTYPEs
-docname: draft-bellis-dnsext-multi-qtypes-04
+docname: draft-bellis-dnsext-multi-qtypes-06
 
 ipr: trust200902
 area: Internet
@@ -136,7 +136,7 @@ that match the additional (QNAME, QTn, QCLASS) tuples.  These records
 MUST be returned in the Answer Section of the response, but the answer
 for the primary QTYPE from the Question Section MUST be included first.
 
-For any particular QTn in the query, if the server provides addtional
+For any particular QTn in the query, if the server provides additional
 answers, or has knowledge that the RR type type does not exist for that
 QNAME (a "negative answer"), it must include that QTn value in the
 Multiple QTYPE Option of its response.

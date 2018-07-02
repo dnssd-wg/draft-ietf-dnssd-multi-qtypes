@@ -4,12 +4,12 @@
 
 DNSEXT Working Group                                           R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                           July 04, 2017
-Expires: January 5, 2018
+Intended status: Standards Track                           July 02, 2018
+Expires: January 3, 2019
 
 
                           DNS Multiple QTYPEs
-                  draft-bellis-dnsext-multi-qtypes-04
+                  draft-bellis-dnsext-multi-qtypes-06
 
 Abstract
 
@@ -32,11 +32,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 5, 2018.
+   This Internet-Draft will expire on January 3, 2019.
 
 Copyright Notice
 
-   Copyright (c) 2017 IETF Trust and the persons identified as the
+   Copyright (c) 2018 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Bellis                   Expires January 5, 2018                [Page 1]
+Bellis                   Expires January 3, 2019                [Page 1]
 
-Internet-Draft             DNS Multiple QTYPEs                 July 2017
+Internet-Draft             DNS Multiple QTYPEs                 July 2018
 
 
 Table of Contents
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Bellis                   Expires January 5, 2018                [Page 2]
+Bellis                   Expires January 3, 2019                [Page 2]
 
-Internet-Draft             DNS Multiple QTYPEs                 July 2017
+Internet-Draft             DNS Multiple QTYPEs                 July 2018
 
 
 2.  Terminology used in this document
@@ -165,9 +165,9 @@ Internet-Draft             DNS Multiple QTYPEs                 July 2017
 
 
 
-Bellis                   Expires January 5, 2018                [Page 3]
+Bellis                   Expires January 3, 2019                [Page 3]
 
-Internet-Draft             DNS Multiple QTYPEs                 July 2017
+Internet-Draft             DNS Multiple QTYPEs                 July 2018
 
 
    calculated based on the OPTION-LENGTH field, having it explicitly
@@ -195,10 +195,10 @@ Internet-Draft             DNS Multiple QTYPEs                 July 2017
    answer for the primary QTYPE from the Question Section MUST be
    included first.
 
-   For any particular QTn in the query, if the server provides addtional
-   answers, or has knowledge that the RR type type does not exist for
-   that QNAME (a "negative answer"), it must include that QTn value in
-   the Multiple QTYPE Option of its response.
+   For any particular QTn in the query, if the server provides
+   additional answers, or has knowledge that the RR type type does not
+   exist for that QNAME (a "negative answer"), it must include that QTn
+   value in the Multiple QTYPE Option of its response.
 
    A negative answer is therefore indicated by the combination of the
    presence of a QTn value in the Multiple QTYPE Option and the absence
@@ -221,9 +221,9 @@ Internet-Draft             DNS Multiple QTYPEs                 July 2017
 
 
 
-Bellis                   Expires January 5, 2018                [Page 4]
+Bellis                   Expires January 3, 2019                [Page 4]
 
-Internet-Draft             DNS Multiple QTYPEs                 July 2017
+Internet-Draft             DNS Multiple QTYPEs                 July 2018
 
 
    TODO: is there a case for mandatory answers, i.e. the client saying I
@@ -277,9 +277,9 @@ Internet-Draft             DNS Multiple QTYPEs                 July 2017
 
 
 
-Bellis                   Expires January 5, 2018                [Page 5]
+Bellis                   Expires January 3, 2019                [Page 5]
 
-Internet-Draft             DNS Multiple QTYPEs                 July 2017
+Internet-Draft             DNS Multiple QTYPEs                 July 2018
 
 
 6.  Acknowledgements
@@ -292,35 +292,35 @@ Internet-Draft             DNS Multiple QTYPEs                 July 2017
 
    [RFC1035]  Mockapetris, P., "Domain names - implementation and
               specification", STD 13, RFC 1035, DOI 10.17487/RFC1035,
-              November 1987, <http://www.rfc-editor.org/info/rfc1035>.
+              November 1987, <https://www.rfc-editor.org/info/rfc1035>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
-              RFC2119, March 1997,
-              <http://www.rfc-editor.org/info/rfc2119>.
+              RFC2119, March 1997, <https://www.rfc-editor.org/info/
+              rfc2119>.
 
    [RFC2181]  Elz, R. and R. Bush, "Clarifications to the DNS
               Specification", RFC 2181, DOI 10.17487/RFC2181, July 1997,
-              <http://www.rfc-editor.org/info/rfc2181>.
+              <https://www.rfc-editor.org/info/rfc2181>.
 
    [RFC4034]  Arends, R., Austein, R., Larson, M., Massey, D., and S.
               Rose, "Resource Records for the DNS Security Extensions",
               RFC 4034, DOI 10.17487/RFC4034, March 2005,
-              <http://www.rfc-editor.org/info/rfc4034>.
+              <https://www.rfc-editor.org/info/rfc4034>.
 
    [RFC5155]  Laurie, B., Sisson, G., Arends, R., and D. Blacka, "DNS
               Security (DNSSEC) Hashed Authenticated Denial of
               Existence", RFC 5155, DOI 10.17487/RFC5155, March 2008,
-              <http://www.rfc-editor.org/info/rfc5155>.
+              <https://www.rfc-editor.org/info/rfc5155>.
 
    [RFC6891]  Damas, J., Graff, M., and P. Vixie, "Extension Mechanisms
               for DNS (EDNS(0))", STD 75, RFC 6891, DOI 10.17487/
-              RFC6891, April 2013,
-              <http://www.rfc-editor.org/info/rfc6891>.
+              RFC6891, April 2013, <https://www.rfc-editor.org/info/
+              rfc6891>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <http://www.rfc-editor.org/info/rfc8174>.
+              May 2017, <https://www.rfc-editor.org/info/rfc8174>.
 
 Author's Address
 
@@ -333,9 +333,9 @@ Author's Address
 
 
 
-Bellis                   Expires January 5, 2018                [Page 6]
+Bellis                   Expires January 3, 2019                [Page 6]
 
-Internet-Draft             DNS Multiple QTYPEs                 July 2017
+Internet-Draft             DNS Multiple QTYPEs                 July 2018
 
 
    Ray Bellis
@@ -389,4 +389,4 @@ Internet-Draft             DNS Multiple QTYPEs                 July 2017
 
 
 
-Bellis                   Expires January 5, 2018                [Page 7]
+Bellis                   Expires January 3, 2019                [Page 7]
