@@ -37,6 +37,11 @@ specified in the question section of a DNS query.
 
 # Introduction
 
+RFC EDITOR: PLEASE REMOVE THE FOLLOWING PARAGRAPH BEFORE PUBLISHING:
+The source for this draft is maintained in GitHub at:
+https://github.com/raybellis/draft-bellis-dnsext-multi-qtypes
+Please submit suggested changes as issues or pull requests there.
+
 A commonly requested DNS {{!RFC1035}} feature is the ability to receive
 multiple related resource records (RRs) in a single DNS response.
 
