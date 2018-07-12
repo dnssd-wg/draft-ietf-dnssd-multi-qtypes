@@ -172,7 +172,7 @@ as the answer for the primary question.
 
 If the DNS client sets the "DNSSEC OK" (DO) bit in the query then the
 server MUST also return the related DNSSEC records that would have been
-returned in a standalone query for the same QTYPE.
+returned in standalone queries for both the QTYPE and all QTn's.
 
 A negative answer from a signed zone MUST contain the appropriate
 authenticated denial of existence records, per {{!RFC4034}} and
