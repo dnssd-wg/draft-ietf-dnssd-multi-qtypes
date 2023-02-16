@@ -1,7 +1,8 @@
 ---
 title: DNS Multiple QTYPEs
-docname: draft-bellis-dnsext-multi-qtypes-06
+docname: draft-bellis-dnsext-multi-qtypes-07
 
+submissiontype: IETF
 ipr: trust200902
 area: Internet
 wg: DNSEXT Working Group
@@ -20,9 +21,9 @@ author:
     name: Ray Bellis
     org: Internet Systems Consortium, Inc.
     abbrev: ISC
-    street: 950 Charter Street
+    street: PO Box 360
     city: Redwood City
-    code: CA 94063
+    code: NH 03857
     country: USA
     phone: +1 650 423 1200
     email: ray@isc.org
@@ -57,16 +58,20 @@ each question has its own QNAME field it would be possible for one
 name to exist and another to not exist, resulting in an
 inconsistent response code.
 
+* {{!RFC1035}} says that QDCOUNT is "usually 1" but the only documented
+exceptions relate to the IQuery OpCode which was obsoleted in {{?RFC3425}}.
+Other text in {{!RFC1035}} strongly implies a singular question.
+
 * The idea that only a single question is allowed is sufficiently
 entrenched that many DNS servers will simply return an error (or
 fail to response at all) if they receive a query with a question
 count (QDCOUNT) of more than one.
 
-To resolve both of these issues, this document constraints the
-problem to those cases where only the QTYPE varies by specifying a
-new option for the Extension Mechanisms for DNS (EDNS {{!RFC6891}}) that
-contains an additional list of QTYPE values that the client wishes to
-receive in addition to that in the primary question.
+To mitigate these issues, this document constrains the problem to those
+cases where only the QTYPE varies by specifying a new option for the
+Extension Mechanisms for DNS (EDNS {{!RFC6891}}) that contains an
+additional list of QTYPE values that the client wishes to receive in
+addition to the single QTYPE appearing in the question section.
 
 TODO: why not "ANY" ?
 
@@ -113,12 +118,12 @@ OPTION-DATA: Option specific, as below:
        +---+---+---+---+---+---+---+---+
 
 QTD: this bit indicates the direction of the packet.  It MUST be clear
-(0) in a query and set (1) in a response.
+(0) in a request and set (1) in a response.
 
 QTCOUNT: a 3 bit field with range 0 .. 7 specifying the number of QT
 fields to follow.  NB: Whilst the QTCOUNT could in theory be calculated
 based on the OPTION-LENGTH field, having it explicitly specified ensures
-a sensible constraint its value.
+a sensible constraint on its range of values.
 
 QTn: a 2 byte field (MSB first) specifying a DNS RR type.  The RR type
 MUST be for a real resource record, and MUST NOT refer to a pseudo RR
