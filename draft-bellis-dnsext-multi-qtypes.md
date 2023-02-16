@@ -1,6 +1,6 @@
 ---
 title: DNS Multiple QTYPEs
-docname: draft-bellis-dnsext-multi-qtypes-07
+docname: draft-bellis-dnsext-multi-qtypes-08
 
 submissiontype: IETF
 ipr: trust200902
@@ -22,10 +22,10 @@ author:
     org: Internet Systems Consortium, Inc.
     abbrev: ISC
     street: PO Box 360
-    city: Redwood City
+    city: Newmarket
     code: NH 03857
     country: USA
-    phone: +1 650 423 1200
+    phone: +1 650 423 1300
     email: ray@isc.org
 
 --- abstract
