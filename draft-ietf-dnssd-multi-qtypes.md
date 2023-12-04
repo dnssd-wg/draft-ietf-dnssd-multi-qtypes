@@ -1,11 +1,11 @@
 ---
 title: DNS Multiple QTYPEs
-docname: draft-bellis-dnsext-multi-qtypes-08
+docname: draft-ietf-dnssd-multi-qtypes-00
 
 submissiontype: IETF
 ipr: trust200902
 area: Internet
-wg: DNSEXT Working Group
+wg: DNSSD Working Group
 kw: Internet-Draft
 cat: std
 
@@ -40,7 +40,7 @@ specified in the question section of a DNS query.
 
 RFC EDITOR: PLEASE REMOVE THE FOLLOWING PARAGRAPH BEFORE PUBLISHING:
 The source for this draft is maintained in GitHub at:
-https://github.com/raybellis/draft-bellis-dnsext-multi-qtypes
+https://github.com/raybellis/draft-ietf-dnssd-multi-qtypes
 Please submit suggested changes as issues or pull requests there.
 
 A commonly requested DNS {{!RFC1035}} feature is the ability to receive

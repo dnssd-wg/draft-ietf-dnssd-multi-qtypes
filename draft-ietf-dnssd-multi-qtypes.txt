@@ -2,14 +2,14 @@
 
 
 
-DNSEXT Working Group                                           R. Bellis
+DNSSD Working Group                                            R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                        16 February 2023
-Expires: 20 August 2023
+Intended status: Standards Track                         4 December 2023
+Expires: 6 June 2024
 
 
                           DNS Multiple QTYPEs
-                  draft-bellis-dnsext-multi-qtypes-07
+                    draft-ietf-dnssd-multi-qtypes-00
 
 Abstract
 
@@ -32,7 +32,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 August 2023.
+   This Internet-Draft will expire on 6 June 2024.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Bellis                   Expires 20 August 2023                 [Page 1]
+Bellis                     Expires 6 June 2024                  [Page 1]
 
-Internet-Draft             DNS Multiple QTYPEs             February 2023
+Internet-Draft             DNS Multiple QTYPEs             December 2023
 
 
 Table of Contents
@@ -80,7 +80,7 @@ Table of Contents
 
    RFC EDITOR: PLEASE REMOVE THE FOLLOWING PARAGRAPH BEFORE PUBLISHING:
    The source for this draft is maintained in GitHub at:
-   https://github.com/raybellis/draft-bellis-dnsext-multi-qtypes Please
+   https://github.com/raybellis/draft-ietf-dnssd-multi-qtypes Please
    submit suggested changes as issues or pull requests there.
 
    A commonly requested DNS [RFC1035] feature is the ability to receive
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Bellis                   Expires 20 August 2023                 [Page 2]
+Bellis                     Expires 6 June 2024                  [Page 2]
 
-Internet-Draft             DNS Multiple QTYPEs             February 2023
+Internet-Draft             DNS Multiple QTYPEs             December 2023
 
 
    *  The idea that only a single question is allowed is sufficiently
@@ -165,9 +165,9 @@ Internet-Draft             DNS Multiple QTYPEs             February 2023
 
 
 
-Bellis                   Expires 20 August 2023                 [Page 3]
+Bellis                     Expires 6 June 2024                  [Page 3]
 
-Internet-Draft             DNS Multiple QTYPEs             February 2023
+Internet-Draft             DNS Multiple QTYPEs             December 2023
 
 
                    +0 (MSB)                            +1 (LSB)
@@ -221,9 +221,9 @@ Internet-Draft             DNS Multiple QTYPEs             February 2023
 
 
 
-Bellis                   Expires 20 August 2023                 [Page 4]
+Bellis                     Expires 6 June 2024                  [Page 4]
 
-Internet-Draft             DNS Multiple QTYPEs             February 2023
+Internet-Draft             DNS Multiple QTYPEs             December 2023
 
 
    A negative answer is therefore indicated by the combination of the
@@ -277,9 +277,9 @@ Internet-Draft             DNS Multiple QTYPEs             February 2023
 
 
 
-Bellis                   Expires 20 August 2023                 [Page 5]
+Bellis                     Expires 6 June 2024                  [Page 5]
 
-Internet-Draft             DNS Multiple QTYPEs             February 2023
+Internet-Draft             DNS Multiple QTYPEs             December 2023
 
 
 4.  Security Considerations
@@ -322,7 +322,7 @@ Internet-Draft             DNS Multiple QTYPEs             February 2023
    [RFC4034]  Arends, R., Austein, R., Larson, M., Massey, D., and S.
               Rose, "Resource Records for the DNS Security Extensions",
               RFC 4034, DOI 10.17487/RFC4034, March 2005,
-              <https://www.rfc-editor.org/rfc/rfc4034>.
+              <https://www.rfc-editor.org/info/rfc4034>.
 
    [RFC5155]  Laurie, B., Sisson, G., Arends, R., and D. Blacka, "DNS
               Security (DNSSEC) Hashed Authenticated Denial of
@@ -333,15 +333,15 @@ Internet-Draft             DNS Multiple QTYPEs             February 2023
 
 
 
-Bellis                   Expires 20 August 2023                 [Page 6]
+Bellis                     Expires 6 June 2024                  [Page 6]
 
-Internet-Draft             DNS Multiple QTYPEs             February 2023
+Internet-Draft             DNS Multiple QTYPEs             December 2023
 
 
    [RFC6891]  Damas, J., Graff, M., and P. Vixie, "Extension Mechanisms
               for DNS (EDNS(0))", STD 75, RFC 6891,
               DOI 10.17487/RFC6891, April 2013,
-              <https://www.rfc-editor.org/rfc/rfc6891>.
+              <https://www.rfc-editor.org/info/rfc6891>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
@@ -358,9 +358,9 @@ Author's Address
    Ray Bellis
    Internet Systems Consortium, Inc.
    PO Box 360
-   Redwood City,  NH 03857
+   Newmarket,  NH 03857
    United States of America
-   Phone: +1 650 423 1200
+   Phone: +1 650 423 1300
    Email: ray@isc.org
 
 
@@ -389,4 +389,4 @@ Author's Address
 
 
 
-Bellis                   Expires 20 August 2023                 [Page 7]
+Bellis                     Expires 6 June 2024                  [Page 7]
