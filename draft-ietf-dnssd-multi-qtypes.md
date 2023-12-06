@@ -1,6 +1,6 @@
 ---
 title: DNS Multiple QTYPEs
-docname: draft-ietf-dnssd-multi-qtypes-00
+docname: draft-ietf-dnssd-multi-qtypes-latest
 
 submissiontype: IETF
 ipr: trust200902
