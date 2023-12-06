@@ -2,18 +2,23 @@
 title: DNS Multiple QTYPEs
 docname: draft-ietf-dnssd-multi-qtypes-latest
 submissiontype: IETF
-ipr: trust200902
+number:
+date:
+consensus: true
+v: 3
+category: std
 area: Internet
-wg: DNSSD Working Group
-kw: Internet-Draft
-cat: std
-
-coding: us-ascii
-pi:
-  - toc
-  - symrefs
-  - sortrefs
-
+wg: DNSSD
+venue:
+  group: DNSSD
+  type: Working Group
+  mail: dnssd@ietf.org
+  arch: https://mailarchive.ietf.org/arch/browse/dnssd/
+  github: dnssd-wg/draft-ietf-dnssd-multi-qtypes
+  latest: https://dnssd-wg.github.io/draft-ietf-dnssd-multi-qtypes/draft-ietf-dnssd-multi-qtypes.html
+keyword:
+  - DNS
+  - resource record
 author:
   -
     ins: R. Bellis
@@ -36,11 +41,6 @@ specified in the question section of a DNS query.
 --- middle
 
 # Introduction
-
-RFC EDITOR: PLEASE REMOVE THE FOLLOWING PARAGRAPH BEFORE PUBLISHING:
-The source for this draft is maintained in GitHub at:
-https://github.com/raybellis/draft-ietf-dnssd-multi-qtypes
-Please submit suggested changes as issues or pull requests there.
 
 A commonly requested DNS {{!RFC1035}} feature is the ability to receive
 multiple related resource records (RRs) in a single DNS response.
@@ -76,11 +76,7 @@ TODO: why not "ANY" ?
 
 # Terminology used in this document
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-"SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-"OPTIONAL" in this document are to be interpreted as described in BCP 14
-{{!RFC2119}} {{!RFC8174}} when, and only when, they appear in all
-capitals, as shown here.
+{::boilerplate bcp14-tagged}
 
 # Description
 
@@ -211,10 +207,11 @@ denial of service attack.
 IANA is requested to assign a new value in the DNS EDNS0 Option Codes
 registry.
 
+--- back
+
 # Acknowledgements
+{:numbered="false"}
 
 The author wishes to thank the following for their feedback and reviews
 during the initial development of this document: Michael Graff, Olafur
 Gudmundsson, Matthijs Mekking, Paul Vixie.
-
---- back
