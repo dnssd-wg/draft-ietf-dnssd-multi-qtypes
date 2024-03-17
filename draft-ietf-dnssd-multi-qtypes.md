@@ -40,13 +40,13 @@ specified in the question section of a DNS query.
 
 RFC EDITOR: PLEASE REMOVE THE FOLLOWING PARAGRAPH BEFORE PUBLISHING:
 The source for this draft is maintained in GitHub at:
-https://github.com/raybellis/draft-ietf-dnssd-multi-qtypes
+https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes
 Please submit suggested changes as issues or pull requests there.
 
 A commonly requested DNS {{!RFC1035}} feature is the ability to receive
 multiple related resource records (RRs) in a single DNS response.
 
-For example, it may be desirable to receive both the A and AAAA
+For example, it may be desirable to receive the A, AAAA and HTTPS
 records for a domain name together, rather than having to issue
 multiple queries.
 
@@ -67,13 +67,15 @@ entrenched that many DNS servers will simply return an error (or
 fail to response at all) if they receive a query with a question
 count (QDCOUNT) of more than one.
 
+Sending QTYPE=ANY does not guarantee that all RRsets will be returned.
+{{?RFC8482}} specifies that responders may return a single RRset of their
+choosing.
+
 To mitigate these issues, this document constrains the problem to those
 cases where only the QTYPE varies by specifying a new option for the
 Extension Mechanisms for DNS (EDNS {{!RFC6891}}) that contains an
 additional list of QTYPE values that the client wishes to receive in
 addition to the single QTYPE appearing in the question section.
-
-TODO: why not "ANY" ?
 
 # Terminology used in this document
 
@@ -125,29 +127,28 @@ fields to follow.  NB: Whilst the QTCOUNT could in theory be calculated
 based on the OPTION-LENGTH field, having it explicitly specified ensures
 a sensible constraint on its range of values.
 
-QTn: a 2 byte field (MSB first) specifying a DNS RR type.  The RR type
-MUST be for a real resource record, and MUST NOT refer to a pseudo RR
-type such as "OPT", "IXFR", "TSIG", "*", etc.
+QTn: a 2 byte field in network order (MSB first) specifying a DNS RR
+type.  The RR type MUST be for a real resource record, and MUST NOT
+refer to a pseudo RR type such as "OPT", "IXFR", "TSIG", "*", etc.
 
-## Response Generation
-
-### Server Side Processing
+## Server Response Generation
 
 A conforming server that receives a Multiple QTYPE Option in a query
 MUST return a Multiple QTYPE Option in its response.
 
 The QTD bit in that response MUST be set (1) as protection against
-servers which simply echo unknown EDNS options verbatim.  If the QTD bit
-in a response is zero the client MUST treat the response as if this
-option is unsupported.
+servers which simply echo unknown EDNS options verbatim.
 
 The server SHOULD attempt to return any resource records known to it
 that match the additional (QNAME, QTn, QCLASS) tuples.  These records
 MUST be returned in the Answer Section of the response, but the answer
 for the primary QTYPE from the Question Section MUST be included first.
 
+If an invalid QTn is received in the query (e.g. one corresponding to a
+meta-RR) the server MUST return a FORMERR response.
+
 For any particular QTn in the query, if the server provides additional
-answers, or has knowledge that the RR type type does not exist for that
+answers, or has knowledge that the RR type does not exist for that
 QNAME (a "negative answer"), it must include that QTn value in the
 Multiple QTYPE Option of its response.
 
@@ -164,19 +165,12 @@ some (or all) of the records for the additional RR types.  Those RR
 types MUST then also be omitted from the Multiple QTYPE Option in the
 response.
 
-A caching recursive server receiving a Multiple QTYPE Option SHOULD
+A caching recursive server receiving a Multiple QTYPE Option query SHOULD
 attempt to fill its positive and negative caches with all of the
 specified RR types before returning its response to the client.
 
 TODO: is there a case for mandatory answers, i.e. the client saying I
 _really_ want all these?
-
-### Client Side Processing
-
-Recursive resolvers MAY use this method to obtain multiple records from
-an authoritative server.  For the purposes of Section 5.4.1 of
-{{!RFC2181}} any authoritative answers received MUST be ranked the same
-as the answer for the primary question.
 
 ### DNSSEC
 
@@ -196,7 +190,21 @@ inconsistent across different RR types.
 Should a validating resolver produce NOERROR for some RR types and
 SERVFAIL for others it MUST omit the RR types that failed to validate
 from its response and from the QTn fields on the Multiple QTYPE option.
-The client MAY then initiate standalone queries for those RR types.
+
+## Client Response Processing
+
+Recursive resolvers MAY use this method to obtain multiple records from
+an authoritative server.  For the purposes of Section 5.4.1 of
+{{!RFC2181}} any authoritative answers received MUST be ranked the same
+as the answer for the primary question.
+
+If the QTD bit in a Multiple QTYPE response is zero, the client MUST
+treat the response as if this option is unsupported.
+
+### DNSSEC Validation
+
+If a validating client observes that some RR types are missing from the
+response it MAY then initiate standalone queries for those RR types.
 
 # Security Considerations
 
