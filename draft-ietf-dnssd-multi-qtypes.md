@@ -77,6 +77,10 @@ Extension Mechanisms for DNS (EDNS {{!RFC6891}}) that contains an
 additional list of QTYPE values that the client wishes to receive in
 addition to the single QTYPE appearing in the question section.
 
+The specification described herein is applicable both for queries from a
+stub resolver to recursive servers, and from recursive resolvers to
+authoritative servers.
+
 # Terminology used in this document
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
