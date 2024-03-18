@@ -68,7 +68,7 @@ Other text in {{!RFC1035}} strongly implies a singular question.
 
 * The idea that only a single question is allowed is sufficiently
 entrenched that many DNS servers will simply return an error (or
-fail to response at all) if they receive a query with a question
+fail to respond at all) if they receive a query with a question
 count (QDCOUNT) of more than one.
 
 Sending QTYPE=ANY does not guarantee that all RRsets will be returned.
