@@ -1,0 +1,160 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2024-04-23T01:08:00.122183+00:00",
+  "repo": "dnssd-wg/draft-ietf-dnssd-multi-qtypes",
+  "labels": [
+    {
+      "name": "bug",
+      "description": null,
+      "color": "ee0701"
+    },
+    {
+      "name": "duplicate",
+      "description": null,
+      "color": "cccccc"
+    },
+    {
+      "name": "enhancement",
+      "description": null,
+      "color": "84b6eb"
+    },
+    {
+      "name": "help wanted",
+      "description": null,
+      "color": "128A0C"
+    },
+    {
+      "name": "invalid",
+      "description": null,
+      "color": "e6e6e6"
+    },
+    {
+      "name": "question",
+      "description": null,
+      "color": "cc317c"
+    },
+    {
+      "name": "wontfix",
+      "description": null,
+      "color": "ffffff"
+    }
+  ],
+  "issues": [
+    {
+      "number": 1,
+      "id": "MDU6SXNzdWUzNDA0NzQ5MDU=",
+      "title": "name the full set of pseudo RR types",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes/issues/1",
+      "state": "OPEN",
+      "author": "samuelweiler",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "or cite some other list of them.\r\n\r\n\"...MUST NOT refer to a pseudo RR type such as \"OPT\", \"IXFR\", \"TSIG\", \"*\", etc....\"",
+      "createdAt": "2018-07-12T03:16:47Z",
+      "updatedAt": "2018-07-13T18:55:23Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "raybellis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The full set is what's defined in the IANA RR type list, plus `OPT` which somehow snuck through with an RR number (41) from the wrong range.",
+          "createdAt": "2018-07-13T18:55:23Z",
+          "updatedAt": "2018-07-13T18:55:23Z"
+        }
+      ]
+    }
+  ],
+  "pulls": [
+    {
+      "number": 2,
+      "id": "MDExOlB1bGxSZXF1ZXN0MjAwODc4MjA5",
+      "title": "include DNSSEC RRs for all QTn's",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes/pull/2",
+      "state": "OPEN",
+      "author": "samuelweiler",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "If some don't exist, then there will be a negative answer proof (an NSEC or NSEC3 RR).  I'm still wondering if there are weird edge cases here....",
+      "createdAt": "2018-07-12T03:20:42Z",
+      "updatedAt": "2018-07-19T14:54:37Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-multi-qtypes",
+      "baseRefName": "master",
+      "baseRefOid": "1e429585d3174a38123e1d565d03dab5a084abd5",
+      "headRepository": "samuelweiler/draft-bellis-dnsext-multi-qtypes",
+      "headRefName": "patch-1",
+      "headRefOid": "80ffbfab1d246028a8a9f545bf27e6654a8d5514",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "raybellis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "this needs a little work before merging - it needs to be clear that the DNSSEC records that would be returned would be those for the QTYPE and QTn records that actually made it into the response, not all of those that were in the query.",
+          "createdAt": "2018-07-13T18:52:15Z",
+          "updatedAt": "2018-07-13T18:52:15Z"
+        },
+        {
+          "author": "samuelweiler",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "One of the edge cases around negative answers: assume a name with a A and AAAA record but no MX record.  QTYPE = A, QTn= MX, AAAA.\r\n\r\nAn NSEC or NSEC3 record is sent in order to prove that MX does not exist (e.g. MX).  The (misbehaving) server sends QTn = MX, AAAA in the answer.  It includes an NSEC record to prove that the MX does not exist.  It (erroneously or maliciously) does not include the AAAA record - a non-validating resolver sees this as a negative answer - a claim that the AAAA doesn't exist. But the NSEC record proves otherwise.",
+          "createdAt": "2018-07-16T10:57:51Z",
+          "updatedAt": "2018-07-16T10:57:51Z"
+        },
+        {
+          "author": "vttale",
+          "authorAssociation": "NONE",
+          "body": "Sam, I'm unclear how your edge case scenario can be a realistic operational problem.  If the authoritative server is giving an inconsistent answer, then it's completely fair for a resolver, validating or not, to have undefined behaviour as far as how it interprets it.  \r\n",
+          "createdAt": "2018-07-19T14:41:55Z",
+          "updatedAt": "2018-07-19T14:41:55Z"
+        },
+        {
+          "author": "vttale",
+          "authorAssociation": "NONE",
+          "body": "I do agree that types that don't exist should be proven by a relevant negative cover, which maybe Ray also intended but wasn't clear from the wording of hist \"records that would be returned ...\" comment.",
+          "createdAt": "2018-07-19T14:45:39Z",
+          "updatedAt": "2018-07-19T14:45:39Z"
+        },
+        {
+          "author": "raybellis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It's in the following paragraphs:\r\n\r\n> A negative answer from a signed zone MUST contain the appropriate authenticated denial of existence records, per {{!RFC4034}} and {{!RFC5155}}.\r\n\r\nIt could probably be made more explicit that this also applies to proof of non-existence for QTYPEs and not just the QNAME.",
+          "createdAt": "2018-07-19T14:53:50Z",
+          "updatedAt": "2018-07-19T14:54:37Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 3,
+      "id": "MDExOlB1bGxSZXF1ZXN0MjAxMDUxNTAx",
+      "title": "point at this github repo",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes/pull/3",
+      "state": "MERGED",
+      "author": "samuelweiler",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2018-07-12T16:05:25Z",
+      "updatedAt": "2018-07-13T18:48:46Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-multi-qtypes",
+      "baseRefName": "master",
+      "baseRefOid": "1e429585d3174a38123e1d565d03dab5a084abd5",
+      "headRepository": "samuelweiler/draft-bellis-dnsext-multi-qtypes",
+      "headRefName": "patch-2",
+      "headRefOid": "666fa67819f95134407b6816181026aa218f2c82",
+      "closedAt": "2018-07-13T18:48:46Z",
+      "mergedAt": "2018-07-13T18:48:46Z",
+      "mergedBy": "raybellis",
+      "mergeCommit": {
+        "oid": "498f080e3867d9ec2700e2ab93c7e3882bff8d30"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
+}
