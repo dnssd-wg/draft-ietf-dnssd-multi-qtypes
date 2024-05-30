@@ -11,19 +11,19 @@
 DNS record types to be delivered alongside the primary record type
 specified in the question section of a DNS query. 
     " name="description">
-<meta content="xml2rfc 3.20.1" name="generator">
+<meta content="xml2rfc 3.21.0" name="generator">
 <meta content="DNS" name="keyword">
 <meta content="resource record" name="keyword">
 <meta content="draft-ietf-dnssd-multi-qtypes-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.20.1
-    Python 3.11.8
+  xml2rfc 3.21.0
+    Python 3.11.9
     ConfigArgParse 1.7
     google-i18n-address 3.1.0
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 4.9.3
-    platformdirs 4.2.0
+    platformdirs 4.2.1
     pycountry 22.3.5
     PyYAML 6.0.1
     requests 2.31.0
@@ -1028,11 +1028,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">DNS Multiple QTYPEs</td>
-<td class="right">March 2024</td>
+<td class="right">May 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Bellis</td>
-<td class="center">Expires 19 September 2024</td>
+<td class="center">Expires 1 December 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1045,12 +1045,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-dnssd-multi-qtypes-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-03-18" class="published">18 March 2024</time>
+<time datetime="2024-05-30" class="published">30 May 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-09-19">19 September 2024</time></dd>
+<dd class="expires"><time datetime="2024-12-01">1 December 2024</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1102,7 +1102,7 @@ specified in the question section of a DNS query.<a href="#section-abstract-1" c
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 19 September 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 1 December 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1141,7 +1141,7 @@ specified in the question section of a DNS query.<a href="#section-abstract-1" c
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-description" class="internal xref">Description</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
-                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-multiple-qtype-edns-option-" class="internal xref">Multiple QTYPE EDNS Option Format</a></p>
+                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-multiple-qtype-edns-options" class="internal xref">Multiple QTYPE EDNS Options Format</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-server-response-generation" class="internal xref">Server Response Generation</a></p>
@@ -1153,11 +1153,6 @@ specified in the question section of a DNS query.<a href="#section-abstract-1" c
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
                 <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-client-response-processing" class="internal xref">Client Response Processing</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3.2.1">
-                    <p id="section-toc.1-1.3.2.3.2.1.1"><a href="#section-3.3.1" class="auto internal xref">3.3.1</a>.  <a href="#name-dnssec-validation" class="internal xref">DNSSEC Validation</a></p>
-</li>
-                </ul>
 </li>
             </ul>
 </li>
@@ -1198,38 +1193,23 @@ multiple related resource records (RRs) in a single DNS response.<a href="#secti
 <p id="section-1-2">For example, it may be desirable to receive the A, AAAA and HTTPS
 records for a domain name together, rather than having to issue
 multiple queries.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">The DNS wire protocol in theory supports having multiple questions in
-a single packet, but in practise this does not work:<a href="#section-1-3" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-1-4.1">
-          <p id="section-1-4.1.1">Each question consists of the tuple (QNAME, QTYPE, QCLASS).  Since
-each question has its own QNAME field it would be possible for one
-name to exist and another to not exist, resulting in an
-inconsistent response code.<a href="#section-1-4.1.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-4.2">
-          <p id="section-1-4.2.1"><span>[<a href="#RFC1035" class="cite xref">RFC1035</a>]</span> says that QDCOUNT is "usually 1" but the only documented
-exceptions relate to the IQuery OpCode which was obsoleted in <span>[<a href="#RFC3425" class="cite xref">RFC3425</a>]</span>.
-Other text in <span>[<a href="#RFC1035" class="cite xref">RFC1035</a>]</span> strongly implies a singular question.<a href="#section-1-4.2.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-1-4.3">
-          <p id="section-1-4.3.1">The idea that only a single question is allowed is sufficiently
-entrenched that many DNS servers will simply return an error (or
-fail to respond at all) if they receive a query with a question
-count (QDCOUNT) of more than one.<a href="#section-1-4.3.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<p id="section-1-5">Sending QTYPE=ANY does not guarantee that all RRsets will be returned.
-<span>[<a href="#RFC8482" class="cite xref">RFC8482</a>]</span> specifies that responders may return a single RRset of their
-choosing.<a href="#section-1-5" class="pilcrow">¶</a></p>
-<p id="section-1-6">To mitigate these issues, this document constrains the problem to those
+<p id="section-1-3">The DNS wire protocol in theory supported having multiple questions in a
+single packet, but in practise this does not work.  In
+<span>[<a href="#I-D.draft-ietf-dnsop-qdcount-is-one" class="cite xref">I-D.draft-ietf-dnsop-qdcount-is-one</a>]</span>, <span>[<a href="#RFC1035" class="cite xref">RFC1035</a>]</span> is updated to only
+permit a single question in a QUERY (OpCode == 0) request.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">Sending QTYPE=ANY does not guarantee that all RRsets will be returned.
+<span>[<a href="#RFC8482" class="cite xref">RFC8482</a>]</span> specifies that responders may return a single RRset of
+their choosing.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">To mitigate these issues, this document constrains the problem to those
 cases where only the QTYPE varies by specifying a new option for the
 Extension Mechanisms for DNS (EDNS <span>[<a href="#RFC6891" class="cite xref">RFC6891</a>]</span>) that contains an
 additional list of QTYPE values that the client wishes to receive in
-addition to the single QTYPE appearing in the question section.<a href="#section-1-6" class="pilcrow">¶</a></p>
-<p id="section-1-7">The specification described herein is applicable both for queries from a
+addition to the single QTYPE appearing in the question section.  A
+second EDNS option is used in response packets as protection against DNS
+middleboxes that echo EDNS options verbatim.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">The specification described herein is applicable both for queries from a
 stub resolver to recursive servers, and from recursive resolvers to
-authoritative servers.<a href="#section-1-7" class="pilcrow">¶</a></p>
+authoritative servers.<a href="#section-1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="terminology-used-in-this-document">
@@ -1248,10 +1228,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-description">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-description" class="section-name selfRef">Description</a>
       </h2>
-<div id="multiple-qtype-edns-option-format">
+<div id="multiple-qtype-edns-options-format">
 <section id="section-3.1">
-        <h3 id="name-multiple-qtype-edns-option-">
-<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-multiple-qtype-edns-option-" class="section-name selfRef">Multiple QTYPE EDNS Option Format</a>
+        <h3 id="name-multiple-qtype-edns-options">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-multiple-qtype-edns-options" class="section-name selfRef">Multiple QTYPE EDNS Options Format</a>
         </h3>
 <p id="section-3.1-1">The overall format of an EDNS option is shown for reference below,
 per <span>[<a href="#RFC6891" class="cite xref">RFC6891</a>]</span>, followed by the option specific data:<a href="#section-3.1-1" class="pilcrow">¶</a></p>
@@ -1268,32 +1248,25 @@ per <span>[<a href="#RFC6891" class="cite xref">RFC6891</a>]</span>, followed by
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 </pre><a href="#section-3.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-3.1-3">OPTION-CODE: TBD by IANA<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">OPTION-CODE: MQTYPE-Query (TBD1) in queries and MQTYPE-Response (TBD2) in responses.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.1-4">OPTION-LENGTH: Size (in octets) of OPTION-DATA.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 <p id="section-3.1-5">OPTION-DATA: Option specific, as below:<a href="#section-3.1-5" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.1-6">
 <pre>
                 +0 (MSB)                            +1 (LSB)
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-0: |QTD|   reserved    |  QTCOUNT  |           QT1 (MSB)           |
+0: |           QT1 (MSB)           |           QT1 (LSB)           |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-2: |           QT1 (LSB)           |              ...              |
+2: /              ...              |              ...              /
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-   |              ...             ///          QTn (MSB)           |
+   /           QTn (MSB)           |           QTn (LSB)           |
    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-   |           QTn (LSB)           |
-   +---+---+---+---+---+---+---+---+
 </pre><a href="#section-3.1-6" class="pilcrow">¶</a>
 </div>
-<p id="section-3.1-7">QTD: this bit indicates the direction of the packet.  It <span class="bcp14">MUST</span> be clear
-(0) in a request and set (1) in a response.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
-<p id="section-3.1-8">QTCOUNT: a 3 bit field with range 0 .. 7 specifying the number of QT
-fields to follow.  NB: Whilst the QTCOUNT could in theory be calculated
-based on the OPTION-LENGTH field, having it explicitly specified ensures
-a sensible constraint on its range of values.<a href="#section-3.1-8" class="pilcrow">¶</a></p>
-<p id="section-3.1-9">QTn: a 2 byte field in network order (MSB first) specifying a DNS RR
-type.  The RR type <span class="bcp14">MUST</span> be for a real resource record, and <span class="bcp14">MUST NOT</span>
-refer to a pseudo RR type such as "OPT", "IXFR", "TSIG", "*", etc.<a href="#section-3.1-9" class="pilcrow">¶</a></p>
+<p id="section-3.1-7">QT: a (potentially empty) list of 2 byte fields (QTx) in network order
+(MSB first) each specifying a DNS RR type.  The RR types <span class="bcp14">MUST</span> be for
+real resource records, and <span class="bcp14">MUST NOT</span> refer to pseudo RR types such as
+"OPT", "IXFR", "TSIG", "*", etc.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="server-response-generation">
@@ -1301,36 +1274,43 @@ refer to a pseudo RR type such as "OPT", "IXFR", "TSIG", "*", etc.<a href="#sect
         <h3 id="name-server-response-generation">
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-server-response-generation" class="section-name selfRef">Server Response Generation</a>
         </h3>
-<p id="section-3.2-1">A conforming server that receives a Multiple QTYPE Option in a query
-<span class="bcp14">MUST</span> return a Multiple QTYPE Option in its response.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2">The QTD bit in that response <span class="bcp14">MUST</span> be set (1) as protection against
-servers which simply echo unknown EDNS options verbatim.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.2-3">The server <span class="bcp14">SHOULD</span> attempt to return any resource records known to it
-that match the additional (QNAME, QTn, QCLASS) tuples.  These records
-<span class="bcp14">MUST</span> be returned in the Answer Section of the response, but the answer
-for the primary QTYPE from the Question Section <span class="bcp14">MUST</span> be included first.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
-<p id="section-3.2-4">If an invalid QTn is received in the query (e.g. one corresponding to a
+<p id="section-3.2-1">A conforming server that receives an MQTYPE-Query option in a query <span class="bcp14">MUST</span>
+return an MQTYPE-Response option in its response.  The use of a
+secondary option code in responses serves as protection against DNS
+middleboxes that echo EDNS OPT Records verbatim.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">A server that receives an MQTYPE-Response option in a query <span class="bcp14">MUST</span> return
+a FORMERR response.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-3">On receipt of a valid MQTYPE-Query option the server <span class="bcp14">SHOULD</span> attempt to
+return any resource records known to it that match the additional
+(QNAME, QTx, QCLASS) tuples.  These records <span class="bcp14">MUST</span> be returned in the
+Answer Section of the response, but the answer for the primary QTYPE
+from the Question Section <span class="bcp14">MUST</span> be included first.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-4">If any invalid QTx is received in the query (e.g. one corresponding to a
 meta-RR) the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
-<p id="section-3.2-5">For any particular QTn in the query, if the server provides additional
+<p id="section-3.2-5">For any particular QTx in the query, if the server provides additional
 answers, or has knowledge that the RR type does not exist for that
-QNAME (a "negative answer"), it must include that QTn value in the
+QNAME (a "negative answer"), it must include that QTx value in the
 Multiple QTYPE Option of its response.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
 <p id="section-3.2-6">A negative answer is therefore indicated by the combination of the
-presence of a QTn value in the Multiple QTYPE Option and the absence of
+presence of a QTx value in the Multiple QTYPE Option and the absence of
 a matching record in the Answer Section.  This is necessary (in the
 absence of DNSSEC) to differentiate between absence of the record from
 the zone and absence of the record from the response.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
 <p id="section-3.2-7">A server that is authoritative for the specified QNAME on receipt of a
 Multiple QTYPE Option <span class="bcp14">MUST</span> attempt to return all specified RR types
-except where that would result in truncation in which case it may omit
-some (or all) of the records for the additional RR types.  Those RR
-types <span class="bcp14">MUST</span> then also be omitted from the Multiple QTYPE Option in the
-response.<a href="#section-3.2-7" class="pilcrow">¶</a></p>
-<p id="section-3.2-8">A caching recursive server receiving a Multiple QTYPE Option query <span class="bcp14">SHOULD</span>
-attempt to fill its positive and negative caches with all of the
-specified RR types before returning its response to the client.<a href="#section-3.2-8" class="pilcrow">¶</a></p>
-<p id="section-3.2-9">TODO: is there a case for mandatory answers, i.e. the client saying I
-<em>really</em> want all these?<a href="#section-3.2-9" class="pilcrow">¶</a></p>
+except where that would result in truncation or a risk of a significant
+DNS amplification attack in which case it <span class="bcp14">MAY</span> omit some (or all) of the
+records for the additional RR types.  Those RR types <span class="bcp14">MUST</span> then also be
+omitted from the Multiple QTYPE Option in the response.<a href="#section-3.2-7" class="pilcrow">¶</a></p>
+<p id="section-3.2-8">A caching recursive server receiving a Multiple QTYPE Option query
+<span class="bcp14">SHOULD</span> attempt to fill its positive and negative caches with all of the
+specified RR types before returning its response to the client.  It <span class="bcp14">MAY</span>
+limit itself to a smaller subset of the specified RR types if the
+processing overhead to fill its caches is too great or if there is a
+risk of a significant DNS amplification attack.<a href="#section-3.2-8" class="pilcrow">¶</a></p>
+<p id="section-3.2-9">While this document specifies no limit on the number of QTx values that
+may be specified, the author anticipates that server implementations
+will provide configuration settings to constrain the response sizes.<a href="#section-3.2-9" class="pilcrow">¶</a></p>
 <div id="dnssec">
 <section id="section-3.2.1">
           <h4 id="name-dnssec">
@@ -1348,7 +1328,7 @@ to the author where the response code for any particular QNAME may be
 inconsistent across different RR types.<a href="#section-3.2.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.2.1-4">Should a validating resolver produce NOERROR for some RR types and
 SERVFAIL for others it <span class="bcp14">MUST</span> omit the RR types that failed to validate
-from its response and from the QTn fields on the Multiple QTYPE option.<a href="#section-3.2.1-4" class="pilcrow">¶</a></p>
+from its response and from the QTx fields on the Multiple QTYPE option.<a href="#section-3.2.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1362,17 +1342,14 @@ from its response and from the QTn fields on the Multiple QTYPE option.<a href="
 an authoritative server.  For the purposes of Section 5.4.1 of
 <span>[<a href="#RFC2181" class="cite xref">RFC2181</a>]</span> any authoritative answers received <span class="bcp14">MUST</span> be ranked the same
 as the answer for the primary question.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
-<p id="section-3.3-2">If the QTD bit in a Multiple QTYPE response is zero, the client <span class="bcp14">MUST</span>
-treat the response as if this option is unsupported.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
-<div id="dnssec-validation">
-<section id="section-3.3.1">
-          <h4 id="name-dnssec-validation">
-<a href="#section-3.3.1" class="section-number selfRef">3.3.1. </a><a href="#name-dnssec-validation" class="section-name selfRef">DNSSEC Validation</a>
-          </h4>
-<p id="section-3.3.1-1">If a validating client observes that some RR types are missing from the
-response it <span class="bcp14">MAY</span> then initiate standalone queries for those RR types.<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
-</section>
-</div>
+<p id="section-3.3-2">If the response to a query containing an MQTYPE-Query option does not
+contain an MQTYPE-Response option, or if it erroneously contains an
+MQTYPE-Query option, the client <span class="bcp14">MUST</span> treat the response as if this
+option is unsupported by the server and <span class="bcp14">SHOULD</span> process the response as
+normal.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.3-3">The client <span class="bcp14">SHOULD</span> subsequently initiate standalone queries (i.e. without
+using the MQTYPE-Query option) for any QTx value that did not generate a
+negative answer.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1394,8 +1371,10 @@ denial of service attack.<a href="#section-4-2" class="pilcrow">¶</a></p>
       <h2 id="name-iana-considerations">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-5-1">IANA is requested to assign a new value in the DNS EDNS0 Option Codes
-registry.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-1">NB: to be rewritten once assignments have been made.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">IANA is requested to assign two new values (TBD1 and TBD2) in the DNS
+EDNS0 Option Codes registry for MQTYPE-Query and MQTYPE-Response.  They
+should be consecutive, with the -Query option being an even number.<a href="#section-5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <section id="section-6">
@@ -1408,6 +1387,10 @@ registry.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
+<dt id="I-D.draft-ietf-dnsop-qdcount-is-one">[I-D.draft-ietf-dnsop-qdcount-is-one]</dt>
+        <dd>
+<span class="refAuthor">Bellis, R.</span> and <span class="refAuthor">J. Abley</span>, <span class="refTitle">"In the DNS, QDCOUNT is (usually) One"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-dnsop-qdcount-is-one-03</span>, <time datetime="2024-05-29" class="refDate">29 May 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-dnsop-qdcount-is-one-03">https://datatracker.ietf.org/doc/html/draft-ietf-dnsop-qdcount-is-one-03</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC1035">[RFC1035]</dt>
         <dd>
 <span class="refAuthor">Mockapetris, P.</span>, <span class="refTitle">"Domain names - implementation and specification"</span>, <span class="seriesInfo">STD 13</span>, <span class="seriesInfo">RFC 1035</span>, <span class="seriesInfo">DOI 10.17487/RFC1035</span>, <time datetime="1987-11" class="refDate">November 1987</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc1035">https://www.rfc-editor.org/rfc/rfc1035</a>&gt;</span>. </dd>
@@ -1445,10 +1428,6 @@ registry.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
-<dt id="RFC3425">[RFC3425]</dt>
-        <dd>
-<span class="refAuthor">Lawrence, D.</span>, <span class="refTitle">"Obsoleting IQUERY"</span>, <span class="seriesInfo">RFC 3425</span>, <span class="seriesInfo">DOI 10.17487/RFC3425</span>, <time datetime="2002-11" class="refDate">November 2002</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3425">https://www.rfc-editor.org/rfc/rfc3425</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC8482">[RFC8482]</dt>
       <dd>
 <span class="refAuthor">Abley, J.</span>, <span class="refAuthor">Gudmundsson, O.</span>, <span class="refAuthor">Majkowski, M.</span>, and <span class="refAuthor">E. Hunt</span>, <span class="refTitle">"Providing Minimal-Sized Responses to DNS Queries That Have QTYPE=ANY"</span>, <span class="seriesInfo">RFC 8482</span>, <span class="seriesInfo">DOI 10.17487/RFC8482</span>, <time datetime="2019-01" class="refDate">January 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8482">https://www.rfc-editor.org/rfc/rfc8482</a>&gt;</span>. </dd>
@@ -1464,7 +1443,10 @@ registry.<a href="#section-5-1" class="pilcrow">¶</a></p>
       </h2>
 <p id="appendix-A-1">The author wishes to thank the following for their feedback and reviews
 during the initial development of this document: Michael Graff, Olafur
-Gudmundsson, Matthijs Mekking, Paul Vixie.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+Gudmundsson, Matthijs Mekking, and Paul Vixie.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-2">In addition the author wishes to thank the following for subsequent
+review during discussion in the DNSSD Working Group: Chris Box, Stuart
+Cheshire, Esko Dijk, Ted Lemon, and David Schinazi.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">

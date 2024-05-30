@@ -4,8 +4,8 @@
 
 DNSSD                                                          R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                           18 March 2024
-Expires: 19 September 2024
+Intended status: Standards Track                             30 May 2024
+Expires: 1 December 2024
 
 
                           DNS Multiple QTYPEs
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 September 2024.
+   This Internet-Draft will expire on 1 December 2024.
 
 Copyright Notice
 
@@ -70,11 +70,10 @@ Table of Contents
    1.  Introduction
    2.  Terminology used in this document
    3.  Description
-     3.1.  Multiple QTYPE EDNS Option Format
+     3.1.  Multiple QTYPE EDNS Options Format
      3.2.  Server Response Generation
        3.2.1.  DNSSEC
      3.3.  Client Response Processing
-       3.3.1.  DNSSEC Validation
    4.  Security Considerations
    5.  IANA Considerations
    6.  References
@@ -92,23 +91,10 @@ Table of Contents
    records for a domain name together, rather than having to issue
    multiple queries.
 
-   The DNS wire protocol in theory supports having multiple questions in
-   a single packet, but in practise this does not work:
-
-   *  Each question consists of the tuple (QNAME, QTYPE, QCLASS).  Since
-      each question has its own QNAME field it would be possible for one
-      name to exist and another to not exist, resulting in an
-      inconsistent response code.
-
-   *  [RFC1035] says that QDCOUNT is "usually 1" but the only documented
-      exceptions relate to the IQuery OpCode which was obsoleted in
-      [RFC3425].  Other text in [RFC1035] strongly implies a singular
-      question.
-
-   *  The idea that only a single question is allowed is sufficiently
-      entrenched that many DNS servers will simply return an error (or
-      fail to respond at all) if they receive a query with a question
-      count (QDCOUNT) of more than one.
+   The DNS wire protocol in theory supported having multiple questions
+   in a single packet, but in practise this does not work.  In
+   [I-D.draft-ietf-dnsop-qdcount-is-one], [RFC1035] is updated to only
+   permit a single question in a QUERY (OpCode == 0) request.
 
    Sending QTYPE=ANY does not guarantee that all RRsets will be
    returned.  [RFC8482] specifies that responders may return a single
@@ -118,7 +104,9 @@ Table of Contents
    those cases where only the QTYPE varies by specifying a new option
    for the Extension Mechanisms for DNS (EDNS [RFC6891]) that contains
    an additional list of QTYPE values that the client wishes to receive
-   in addition to the single QTYPE appearing in the question section.
+   in addition to the single QTYPE appearing in the question section.  A
+   second EDNS option is used in response packets as protection against
+   DNS middleboxes that echo EDNS options verbatim.
 
    The specification described herein is applicable both for queries
    from a stub resolver to recursive servers, and from recursive
@@ -134,7 +122,7 @@ Table of Contents
 
 3.  Description
 
-3.1.  Multiple QTYPE EDNS Option Format
+3.1.  Multiple QTYPE EDNS Options Format
 
    The overall format of an EDNS option is shown for reference below,
    per [RFC6891], followed by the option specific data:
@@ -149,7 +137,8 @@ Table of Contents
       /                                                               /
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
-   OPTION-CODE: TBD by IANA
+   OPTION-CODE: MQTYPE-Query (TBD1) in queries and MQTYPE-Response
+   (TBD2) in responses.
 
    OPTION-LENGTH: Size (in octets) of OPTION-DATA.
 
@@ -157,68 +146,67 @@ Table of Contents
 
                    +0 (MSB)                            +1 (LSB)
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-   0: |QTD|   reserved    |  QTCOUNT  |           QT1 (MSB)           |
+   0: |           QT1 (MSB)           |           QT1 (LSB)           |
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-   2: |           QT1 (LSB)           |              ...              |
+   2: /              ...              |              ...              /
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-      |              ...             ///          QTn (MSB)           |
+      /           QTn (MSB)           |           QTn (LSB)           |
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-      |           QTn (LSB)           |
-      +---+---+---+---+---+---+---+---+
 
-   QTD: this bit indicates the direction of the packet.  It MUST be
-   clear (0) in a request and set (1) in a response.
-
-   QTCOUNT: a 3 bit field with range 0 .. 7 specifying the number of QT
-   fields to follow.  NB: Whilst the QTCOUNT could in theory be
-   calculated based on the OPTION-LENGTH field, having it explicitly
-   specified ensures a sensible constraint on its range of values.
-
-   QTn: a 2 byte field in network order (MSB first) specifying a DNS RR
-   type.  The RR type MUST be for a real resource record, and MUST NOT
-   refer to a pseudo RR type such as "OPT", "IXFR", "TSIG", "*", etc.
+   QT: a (potentially empty) list of 2 byte fields (QTx) in network
+   order (MSB first) each specifying a DNS RR type.  The RR types MUST
+   be for real resource records, and MUST NOT refer to pseudo RR types
+   such as "OPT", "IXFR", "TSIG", "*", etc.
 
 3.2.  Server Response Generation
 
-   A conforming server that receives a Multiple QTYPE Option in a query
-   MUST return a Multiple QTYPE Option in its response.
+   A conforming server that receives an MQTYPE-Query option in a query
+   MUST return an MQTYPE-Response option in its response.  The use of a
+   secondary option code in responses serves as protection against DNS
+   middleboxes that echo EDNS OPT Records verbatim.
 
-   The QTD bit in that response MUST be set (1) as protection against
-   servers which simply echo unknown EDNS options verbatim.
+   A server that receives an MQTYPE-Response option in a query MUST
+   return a FORMERR response.
 
-   The server SHOULD attempt to return any resource records known to it
-   that match the additional (QNAME, QTn, QCLASS) tuples.  These records
-   MUST be returned in the Answer Section of the response, but the
-   answer for the primary QTYPE from the Question Section MUST be
-   included first.
+   On receipt of a valid MQTYPE-Query option the server SHOULD attempt
+   to return any resource records known to it that match the additional
+   (QNAME, QTx, QCLASS) tuples.  These records MUST be returned in the
+   Answer Section of the response, but the answer for the primary QTYPE
+   from the Question Section MUST be included first.
 
-   If an invalid QTn is received in the query (e.g. one corresponding to
-   a meta-RR) the server MUST return a FORMERR response.
+   If any invalid QTx is received in the query (e.g. one corresponding
+   to a meta-RR) the server MUST return a FORMERR response.
 
-   For any particular QTn in the query, if the server provides
+   For any particular QTx in the query, if the server provides
    additional answers, or has knowledge that the RR type does not exist
-   for that QNAME (a "negative answer"), it must include that QTn value
+   for that QNAME (a "negative answer"), it must include that QTx value
    in the Multiple QTYPE Option of its response.
 
    A negative answer is therefore indicated by the combination of the
-   presence of a QTn value in the Multiple QTYPE Option and the absence
+   presence of a QTx value in the Multiple QTYPE Option and the absence
    of a matching record in the Answer Section.  This is necessary (in
    the absence of DNSSEC) to differentiate between absence of the record
    from the zone and absence of the record from the response.
 
    A server that is authoritative for the specified QNAME on receipt of
    a Multiple QTYPE Option MUST attempt to return all specified RR types
-   except where that would result in truncation in which case it may
-   omit some (or all) of the records for the additional RR types.  Those
-   RR types MUST then also be omitted from the Multiple QTYPE Option in
-   the response.
+   except where that would result in truncation or a risk of a
+   significant DNS amplification attack in which case it MAY omit some
+   (or all) of the records for the additional RR types.  Those RR types
+   MUST then also be omitted from the Multiple QTYPE Option in the
+   response.
 
    A caching recursive server receiving a Multiple QTYPE Option query
    SHOULD attempt to fill its positive and negative caches with all of
    the specified RR types before returning its response to the client.
+   It MAY limit itself to a smaller subset of the specified RR types if
+   the processing overhead to fill its caches is too great or if there
+   is a risk of a significant DNS amplification attack.
 
-   TODO: is there a case for mandatory answers, i.e. the client saying I
-   _really_ want all these?
+   While this document specifies no limit on the number of QTx values
+   that may be specified, the author anticipates that server
+   implementations will provide configuration settings to constrain the
+   response sizes.
 
 3.2.1.  DNSSEC
 
@@ -237,7 +225,7 @@ Table of Contents
 
    Should a validating resolver produce NOERROR for some RR types and
    SERVFAIL for others it MUST omit the RR types that failed to validate
-   from its response and from the QTn fields on the Multiple QTYPE
+   from its response and from the QTx fields on the Multiple QTYPE
    option.
 
 3.3.  Client Response Processing
@@ -247,14 +235,15 @@ Table of Contents
    [RFC2181] any authoritative answers received MUST be ranked the same
    as the answer for the primary question.
 
-   If the QTD bit in a Multiple QTYPE response is zero, the client MUST
-   treat the response as if this option is unsupported.
+   If the response to a query containing an MQTYPE-Query option does not
+   contain an MQTYPE-Response option, or if it erroneously contains an
+   MQTYPE-Query option, the client MUST treat the response as if this
+   option is unsupported by the server and SHOULD process the response
+   as normal.
 
-3.3.1.  DNSSEC Validation
-
-   If a validating client observes that some RR types are missing from
-   the response it MAY then initiate standalone queries for those RR
-   types.
+   The client SHOULD subsequently initiate standalone queries (i.e.
+   without using the MQTYPE-Query option) for any QTx value that did not
+   generate a negative answer.
 
 4.  Security Considerations
 
@@ -267,12 +256,23 @@ Table of Contents
 
 5.  IANA Considerations
 
-   IANA is requested to assign a new value in the DNS EDNS0 Option Codes
-   registry.
+   NB: to be rewritten once assignments have been made.
+
+   IANA is requested to assign two new values (TBD1 and TBD2) in the DNS
+   EDNS0 Option Codes registry for MQTYPE-Query and MQTYPE-Response.
+   They should be consecutive, with the -Query option being an even
+   number.
 
 6.  References
 
 6.1.  Normative References
+
+   [I-D.draft-ietf-dnsop-qdcount-is-one]
+              Bellis, R. and J. Abley, "In the DNS, QDCOUNT is (usually)
+              One", Work in Progress, Internet-Draft, draft-ietf-dnsop-
+              qdcount-is-one-03, 29 May 2024,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-dnsop-
+              qdcount-is-one-03>.
 
    [RFC1035]  Mockapetris, P., "Domain names - implementation and
               specification", STD 13, RFC 1035, DOI 10.17487/RFC1035,
@@ -308,10 +308,6 @@ Table of Contents
 
 6.2.  Informative References
 
-   [RFC3425]  Lawrence, D., "Obsoleting IQUERY", RFC 3425,
-              DOI 10.17487/RFC3425, November 2002,
-              <https://www.rfc-editor.org/rfc/rfc3425>.
-
    [RFC8482]  Abley, J., Gudmundsson, O., Majkowski, M., and E. Hunt,
               "Providing Minimal-Sized Responses to DNS Queries That
               Have QTYPE=ANY", RFC 8482, DOI 10.17487/RFC8482, January
@@ -321,7 +317,11 @@ Acknowledgements
 
    The author wishes to thank the following for their feedback and
    reviews during the initial development of this document: Michael
-   Graff, Olafur Gudmundsson, Matthijs Mekking, Paul Vixie.
+   Graff, Olafur Gudmundsson, Matthijs Mekking, and Paul Vixie.
+
+   In addition the author wishes to thank the following for subsequent
+   review during discussion in the DNSSD Working Group: Chris Box,
+   Stuart Cheshire, Esko Dijk, Ted Lemon, and David Schinazi.
 
 Author's Address
 
