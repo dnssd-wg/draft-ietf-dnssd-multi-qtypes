@@ -1,6 +1,6 @@
 ---
 title: DNS Multiple QTYPEs
-docname: draft-ietf-dnssd-multi-qtypes-01
+docname: draft-ietf-dnssd-multi-qtypes-latest
 submissiontype: IETF
 number:
 date:
@@ -58,13 +58,13 @@ Sending QTYPE=ANY does not guarantee that all RRsets will be returned.
 {{?RFC8482}} specifies that responders may return a single RRset of
 their choosing.
 
-To mitigate these issues, this document constrains the problem to those
-cases where only the QTYPE varies by specifying a new option for the
-Extension Mechanisms for DNS (EDNS {{!RFC6891}}) that contains an
-additional list of QTYPE values that the client wishes to receive in
-addition to the single QTYPE appearing in the question section.  A
-second EDNS option is used in response packets as protection against DNS
-middleboxes that echo EDNS options verbatim.
+This document provides a solution for those cases where only the QTYPE
+varies by specifying a new option for the Extension Mechanisms for DNS
+(EDNS {{!RFC6891}}) that contains an additional list of QTYPE values
+that the client wishes to receive in addition to the single QTYPE
+appearing in the question section.  A different EDNS option is used in
+response packets as protection against DNS middleboxes that echo EDNS
+options verbatim.
 
 The specification described herein is applicable both for queries from a
 stub resolver to recursive servers, and from recursive resolvers to
@@ -114,12 +114,9 @@ real resource records, and MUST NOT refer to pseudo RR types such as
 ## Server Response Generation
 
 A conforming server that receives an MQTYPE-Query option in a query MUST
-return an MQTYPE-Response option in its response.  The use of a
-secondary option code in responses serves as protection against DNS
-middleboxes that echo EDNS OPT Records verbatim.
-
-A server that receives an MQTYPE-Response option in a query MUST return
-a FORMERR response.
+return an MQTYPE-Response option in its response.  A server that
+receives an MQTYPE-Response option in a query MUST return a FORMERR
+response.
 
 On receipt of a valid MQTYPE-Query option the server SHOULD attempt to
 return any resource records known to it that match the additional
@@ -131,9 +128,11 @@ If any invalid QTx is received in the query (e.g. one corresponding to a
 meta-RR) the server MUST return a FORMERR response.
 
 For any particular QTx in the query, if the server provides additional
-answers, or has knowledge that the RR type does not exist for that
-QNAME (a "negative answer"), it must include that QTx value in the
-Multiple QTYPE Option of its response.
+answers, or has knowledge that the RR type does not exist for that QNAME
+(a "negative answer"), it MUST include that QTx value in the list of
+QTYPEs in its MQTYPE-Response option.  If the server does not provide an
+answer (whether positive or negative) for that QTx then that value MUST
+be omitted from the list of QTYPEs in it MQTYPE-Response option.
 
 A negative answer is therefore indicated by the combination of the
 presence of a QTx value in the Multiple QTYPE Option and the absence of
@@ -145,8 +144,7 @@ A server that is authoritative for the specified QNAME on receipt of a
 Multiple QTYPE Option MUST attempt to return all specified RR types
 except where that would result in truncation or a risk of a significant
 DNS amplification attack in which case it MAY omit some (or all) of the
-records for the additional RR types.  Those RR types MUST then also be
-omitted from the Multiple QTYPE Option in the response.
+records for the additional RR types.
 
 A caching recursive server receiving a Multiple QTYPE Option query
 SHOULD attempt to fill its positive and negative caches with all of the
@@ -189,7 +187,7 @@ If the response to a query containing an MQTYPE-Query option does not
 contain an MQTYPE-Response option, or if it erroneously contains an
 MQTYPE-Query option, the client MUST treat the response as if this
 option is unsupported by the server and SHOULD process the response as
-normal.
+if the MQTYPE-Query option had not been used.
 
 The client SHOULD subsequently initiate standalone queries (i.e. without
 using the MQTYPE-Query option) for any QTx value that did not generate a
