@@ -1032,7 +1032,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Bellis</td>
-<td class="center">Expires 1 December 2024</td>
+<td class="center">Expires 2 December 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1045,12 +1045,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-dnssd-multi-qtypes-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-05-30" class="published">30 May 2024</time>
+<time datetime="2024-05-31" class="published">31 May 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-12-01">1 December 2024</time></dd>
+<dd class="expires"><time datetime="2024-12-02">2 December 2024</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1102,7 +1102,7 @@ specified in the question section of a DNS query.<a href="#section-abstract-1" c
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 1 December 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 2 December 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1200,13 +1200,13 @@ permit a single question in a QUERY (OpCode == 0) request.<a href="#section-1-3"
 <p id="section-1-4">Sending QTYPE=ANY does not guarantee that all RRsets will be returned.
 <span>[<a href="#RFC8482" class="cite xref">RFC8482</a>]</span> specifies that responders may return a single RRset of
 their choosing.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">To mitigate these issues, this document constrains the problem to those
-cases where only the QTYPE varies by specifying a new option for the
-Extension Mechanisms for DNS (EDNS <span>[<a href="#RFC6891" class="cite xref">RFC6891</a>]</span>) that contains an
-additional list of QTYPE values that the client wishes to receive in
-addition to the single QTYPE appearing in the question section.  A
-second EDNS option is used in response packets as protection against DNS
-middleboxes that echo EDNS options verbatim.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-5">This document provides a solution for those cases where only the QTYPE
+varies by specifying a new option for the Extension Mechanisms for DNS
+(EDNS <span>[<a href="#RFC6891" class="cite xref">RFC6891</a>]</span>) that contains an additional list of QTYPE values
+that the client wishes to receive in addition to the single QTYPE
+appearing in the question section.  A different EDNS option is used in
+response packets as protection against DNS middleboxes that echo EDNS
+options verbatim.<a href="#section-1-5" class="pilcrow">¶</a></p>
 <p id="section-1-6">The specification described herein is applicable both for queries from a
 stub resolver to recursive servers, and from recursive resolvers to
 authoritative servers.<a href="#section-1-6" class="pilcrow">¶</a></p>
@@ -1275,42 +1275,41 @@ real resource records, and <span class="bcp14">MUST NOT</span> refer to pseudo R
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-server-response-generation" class="section-name selfRef">Server Response Generation</a>
         </h3>
 <p id="section-3.2-1">A conforming server that receives an MQTYPE-Query option in a query <span class="bcp14">MUST</span>
-return an MQTYPE-Response option in its response.  The use of a
-secondary option code in responses serves as protection against DNS
-middleboxes that echo EDNS OPT Records verbatim.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2-2">A server that receives an MQTYPE-Response option in a query <span class="bcp14">MUST</span> return
-a FORMERR response.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.2-3">On receipt of a valid MQTYPE-Query option the server <span class="bcp14">SHOULD</span> attempt to
+return an MQTYPE-Response option in its response.  A server that
+receives an MQTYPE-Response option in a query <span class="bcp14">MUST</span> return a FORMERR
+response.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">On receipt of a valid MQTYPE-Query option the server <span class="bcp14">SHOULD</span> attempt to
 return any resource records known to it that match the additional
 (QNAME, QTx, QCLASS) tuples.  These records <span class="bcp14">MUST</span> be returned in the
 Answer Section of the response, but the answer for the primary QTYPE
-from the Question Section <span class="bcp14">MUST</span> be included first.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
-<p id="section-3.2-4">If any invalid QTx is received in the query (e.g. one corresponding to a
-meta-RR) the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
-<p id="section-3.2-5">For any particular QTx in the query, if the server provides additional
-answers, or has knowledge that the RR type does not exist for that
-QNAME (a "negative answer"), it must include that QTx value in the
-Multiple QTYPE Option of its response.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
-<p id="section-3.2-6">A negative answer is therefore indicated by the combination of the
+from the Question Section <span class="bcp14">MUST</span> be included first.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-3">If any invalid QTx is received in the query (e.g. one corresponding to a
+meta-RR) the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-4">For any particular QTx in the query, if the server provides additional
+answers, or has knowledge that the RR type does not exist for that QNAME
+(a "negative answer"), it <span class="bcp14">MUST</span> include that QTx value in the list of
+QTYPEs in its MQTYPE-Response option.  If the server does not provide an
+answer (whether positive or negative) for that QTx then that value <span class="bcp14">MUST</span>
+be omitted from the list of QTYPEs in it MQTYPE-Response option.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
+<p id="section-3.2-5">A negative answer is therefore indicated by the combination of the
 presence of a QTx value in the Multiple QTYPE Option and the absence of
 a matching record in the Answer Section.  This is necessary (in the
 absence of DNSSEC) to differentiate between absence of the record from
-the zone and absence of the record from the response.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
-<p id="section-3.2-7">A server that is authoritative for the specified QNAME on receipt of a
+the zone and absence of the record from the response.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
+<p id="section-3.2-6">A server that is authoritative for the specified QNAME on receipt of a
 Multiple QTYPE Option <span class="bcp14">MUST</span> attempt to return all specified RR types
 except where that would result in truncation or a risk of a significant
 DNS amplification attack in which case it <span class="bcp14">MAY</span> omit some (or all) of the
-records for the additional RR types.  Those RR types <span class="bcp14">MUST</span> then also be
-omitted from the Multiple QTYPE Option in the response.<a href="#section-3.2-7" class="pilcrow">¶</a></p>
-<p id="section-3.2-8">A caching recursive server receiving a Multiple QTYPE Option query
+records for the additional RR types.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
+<p id="section-3.2-7">A caching recursive server receiving a Multiple QTYPE Option query
 <span class="bcp14">SHOULD</span> attempt to fill its positive and negative caches with all of the
 specified RR types before returning its response to the client.  It <span class="bcp14">MAY</span>
 limit itself to a smaller subset of the specified RR types if the
 processing overhead to fill its caches is too great or if there is a
-risk of a significant DNS amplification attack.<a href="#section-3.2-8" class="pilcrow">¶</a></p>
-<p id="section-3.2-9">While this document specifies no limit on the number of QTx values that
+risk of a significant DNS amplification attack.<a href="#section-3.2-7" class="pilcrow">¶</a></p>
+<p id="section-3.2-8">While this document specifies no limit on the number of QTx values that
 may be specified, the author anticipates that server implementations
-will provide configuration settings to constrain the response sizes.<a href="#section-3.2-9" class="pilcrow">¶</a></p>
+will provide configuration settings to constrain the response sizes.<a href="#section-3.2-8" class="pilcrow">¶</a></p>
 <div id="dnssec">
 <section id="section-3.2.1">
           <h4 id="name-dnssec">
@@ -1346,7 +1345,7 @@ as the answer for the primary question.<a href="#section-3.3-1" class="pilcrow">
 contain an MQTYPE-Response option, or if it erroneously contains an
 MQTYPE-Query option, the client <span class="bcp14">MUST</span> treat the response as if this
 option is unsupported by the server and <span class="bcp14">SHOULD</span> process the response as
-normal.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+if the MQTYPE-Query option had not been used.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
 <p id="section-3.3-3">The client <span class="bcp14">SHOULD</span> subsequently initiate standalone queries (i.e. without
 using the MQTYPE-Query option) for any QTx value that did not generate a
 negative answer.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
