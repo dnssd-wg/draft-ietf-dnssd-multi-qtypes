@@ -36,7 +36,7 @@ author:
 
 This document specifies a method for a DNS client to request additional
 DNS record types to be delivered alongside the primary record type
-specified in the question section of a DNS query.
+specified in the question section of a DNS query (OpCode=0).
 
 --- middle
 
@@ -52,7 +52,7 @@ multiple queries.
 The DNS wire protocol in theory supported having multiple questions in a
 single packet, but in practise this does not work.  In
 {{!I-D.draft-ietf-dnsop-qdcount-is-one}}, {{!RFC1035}} is updated to only
-permit a single question in a QUERY (OpCode == 0) request.
+permit a single question in a QUERY (OpCode=0) request.
 
 Sending QTYPE=ANY does not guarantee that all RRsets will be returned.
 {{?RFC8482}} specifies that responders may return a single RRset of
@@ -113,70 +113,72 @@ QT: a (potentially empty) list of 2 byte fields (QTx) in network order
 real resource records, and MUST NOT refer to pseudo RR types such as
 "OPT", "IXFR", "TSIG", "*", etc.
 
-## Server Response Generation
+## Server Handling
 
-A conforming server that receives an MQTYPE-Query option in a query MUST
-return an MQTYPE-Response option in its response.  A server that
-receives an MQTYPE-Response option in a query MUST return a FORMERR
-response.
+### Request Parsing
 
-On receipt of a valid MQTYPE-Query option the server SHOULD attempt to
-return any resource records known to it that match the additional
-(QNAME, QTx, QCLASS) tuples.  These records MUST be returned in the
-Answer Section of the response, but the answer for the primary QTYPE
-from the Question Section MUST be included first.
+If MQType-Query is received in any inbound DNS message with an OpCode
+other than QUERY (0) the server MUST return a FORMERR response.
+
+A server that receives an MQTYPE-Response option in a query or that
+receives more than one MQTYPE-Query option MUST return a FORMERR response.
+
+If any duplicate QTx is received in the query (or one duplicating the
+primary QTYPE field) the server MUST return a FORMERR response.
+
+If MQTYPE-Query is received in a query that contains no primary question
+(i.e. QDCOUNT=0) the server MUST return a FORMERR response.
 
 If any invalid QTx is received in the query (e.g. one corresponding to a
 meta-RR) the server MUST return a FORMERR response.
 
-For any particular QTx in the query, if the server provides additional
-answers, or has knowledge that the RR type does not exist for that QNAME
-(a "negative answer"), it MUST include that QTx value in the list of
-QTYPEs in its MQTYPE-Response option.  If the server does not provide an
-answer (whether positive or negative) for that QTx then that value MUST
-be omitted from the list of QTYPEs in it MQTYPE-Response option.
+### Response Generation
 
-A negative answer is therefore indicated by the combination of the
-presence of a QTx value in the Multiple QTYPE Option and the absence of
-a matching record in the Answer Section.  This is necessary (in the
-absence of DNSSEC) to differentiate between absence of the record from
-the zone and absence of the record from the response.
+A conforming server that receives an MQTYPE-Query option in a query MUST
+return an MQTYPE-Response option in its response, even if that response
+is truncated (TC=1).
 
-A server that is authoritative for the specified QNAME on receipt of a
-Multiple QTYPE Option MUST attempt to return all specified RR types
-except where that would result in truncation or a risk of a significant
-DNS amplification attack in which case it MAY omit some (or all) of the
-records for the additional RR types.
+The server MUST first start constructing a response for the primary
+(QNAME, QCLASS, QTYPE) tuple specified in the Question section per
+the existing DNS sections.  The RCODE and all other flags (e.g. AA,
+AD, etc) MUST be determined at this time.
 
-A caching recursive server receiving a Multiple QTYPE Option query
-SHOULD attempt to fill its positive and negative caches with all of the
-specified RR types before returning its response to the client.  It MAY
-limit itself to a smaller subset of the specified RR types if the
-processing overhead to fill its caches is too great or if there is a
-risk of a significant DNS amplification attack.
+If this initial response results in truncation (TC=1) then the
+additional queries specified in MQTYPE-Query MUST NOT be processed.
 
-While this document specifies no limit on the number of QTx values that
-may be specified, the author anticipates that server implementations
-will provide configuration settings to constrain the response sizes.
+After the initial response is prepared, the server MUST attempt to
+combine the responses for individual (QNAME, QCLASS, QTx) combinations
+into the response for the first query.
 
-### DNSSEC
+For each individual combination the server MUST evaluate the resulting
+RCODE and other flags and check that they all match the values generated
+from the primary query.
 
-If the DNS client sets the "DNSSEC OK" (DO) bit in the query then the
-server MUST also return the related DNSSEC records that would have been
-returned in a standalone query for the same QTYPE.
+If any mismatch is detected the mismatching additional response MUST NOT
+be included in the final combined response and its QTx value MUST NOT be
+included in the MQTYPE-Response list.  This might happen, for example,
+if the primary query resulted in a NOERROR response but a QTx query
+resulted in a SERVFAIL, or if the primary response has AA=0 but a QTx
+response has AA=1, such as might happen if the NS and DS records were
+both requested at the parent side of a zone cut.
 
-A negative answer from a signed zone MUST contain the appropriate
-authenticated denial of existence records, per {{!RFC4034}} and
-{{!RFC5155}}.
+If no mismatches are detected the server MUST attempt to combine the
+individual RRs into their respective sections. The server MUST detect
+duplicate RRs and keep only a single copy of each RR in its respective
+section.  Duplicates can occur e.g. in Answer section if a CNAME chain
+is involved, or e.g. Authority section if multiple QTYPEs don't exist
+etc.  Note that RRs can be legitimately duplicated in different
+sections, e.g. for (SOA, TYPE12345) combination on apex where TYPE12345
+is not present.
 
-In a signed zone there is a theoretical risk of valid signatures for one
-RR type and invalid signatures for another.  This is the only case known
-to the author where the response code for any particular QNAME may be
-inconsistent across different RR types.
+If message size (or other) limits do not allow all of the data obtained
+by querying for an additional QTx to be included in the final response
+then the server MUST NOT include the respective QTx in the
+MQTYPE-Response list and MAY stop processing further QTx combinations.
 
-Should a validating resolver produce NOERROR for some RR types and
-SERVFAIL for others it MUST omit the RR types that failed to validate
-from its response and from the QTx fields on the Multiple QTYPE option.
+If all RRs for a single QTx combination fit into the message then the
+server MUST include respective QTx in the MQTYPE-Response list to
+indicate that given query type was completely processed.
 
 ## Client Response Processing
 
@@ -190,6 +192,10 @@ contain an MQTYPE-Response option, or if it erroneously contains an
 MQTYPE-Query option, the client MUST treat the response as if this
 option is unsupported by the server and SHOULD process the response as
 if the MQTYPE-Query option had not been used.
+
+If the MQTYPE-Response option is present more than once or if a QTx
+value is duplicate the client MUST treat the answer as invalid
+(equivalent to FORMERR)
 
 The client SHOULD subsequently initiate standalone queries (i.e. without
 using the MQTYPE-Query option) for any QTx value that did not generate a
@@ -223,4 +229,4 @@ Gudmundsson, Matthijs Mekking, and Paul Vixie.
 
 In addition the author wishes to thank the following for subsequent
 review during discussion in the DNSSD Working Group: Chris Box, Stuart
-Cheshire, Esko Dijk, Ted Lemon, and David Schinazi.
+Cheshire, Esko Dijk, Ted Lemon, David Schinazi and Petr Spacek.
