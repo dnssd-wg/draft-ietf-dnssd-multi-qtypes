@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-21T01:21:04.823294+00:00",
+  "timestamp": "2024-07-23T01:16:03.966645+00:00",
   "repo": "dnssd-wg/draft-ietf-dnssd-multi-qtypes",
   "labels": [
     {
@@ -153,6 +153,32 @@
       "mergeCommit": {
         "oid": "498f080e3867d9ec2700e2ab93c7e3882bff8d30"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 4,
+      "id": "PR_kwDOA8v66c52C3cG",
+      "title": "Add note about non-applicability to mDNS",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes/pull/4",
+      "state": "OPEN",
+      "author": "RemiNVG",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "As this draft is being discussed in the dnssd group, one might think that it applies to mDNS queries commonly used for DNS service discovery as well, which is not actually the case. I think clarification would help; at least I was confused by that point and had to confirm by email.\r\n\r\nSome notes about the context of this draft in the dnssd WG would help as well, maybe someone else can add a bit of context around that afterwards.",
+      "createdAt": "2024-07-22T05:54:51Z",
+      "updatedAt": "2024-07-22T05:54:52Z",
+      "baseRepository": "dnssd-wg/draft-ietf-dnssd-multi-qtypes",
+      "baseRefName": "master",
+      "baseRefOid": "265073503d2ac60f2b810054f9f67d212366ad90",
+      "headRepository": "RemiNVG/draft-ietf-dnssd-multi-qtypes",
+      "headRefName": "mdns_applicability",
+      "headRefOid": "e0e4b7c890fe1e252d6e51cacfe0236967a91aaa",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
