@@ -68,7 +68,9 @@ options verbatim.
 
 The specification described herein is applicable both for queries from a
 stub resolver to recursive servers, and from recursive resolvers to
-authoritative servers.
+authoritative servers. It does not apply to Multicast DNS queries
+{{?RFC6762}}, which are already designed to allow requesting multiple
+records in a single query.
 
 # Terminology used in this document
 
