@@ -4,8 +4,8 @@
 
 DNSSD                                                          R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                            23 July 2024
-Expires: 24 January 2025
+Intended status: Standards Track                            25 July 2024
+Expires: 26 January 2025
 
 
                           DNS Multiple QTYPEs
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 January 2025.
+   This Internet-Draft will expire on 26 January 2025.
 
 Copyright Notice
 
@@ -95,8 +95,8 @@ Table of Contents
 
    The DNS wire protocol in theory supported having multiple questions
    in a single packet, but in practise this does not work.  In
-   [I-D.draft-ietf-dnsop-qdcount-is-one], [RFC1035] is updated to only
-   permit a single question in a QUERY (OpCode=0) request.
+   [RFC9619], [RFC1035] is updated to only permit a single question in a
+   QUERY (OpCode=0) request.
 
    Sending QTYPE=ANY does not guarantee that all RRsets will be
    returned.  [RFC8482] specifies that responders may return a single
@@ -274,13 +274,6 @@ Table of Contents
 
 6.1.  Normative References
 
-   [I-D.draft-ietf-dnsop-qdcount-is-one]
-              Bellis, R. and J. Abley, "In the DNS, QDCOUNT is (usually)
-              One", Work in Progress, Internet-Draft, draft-ietf-dnsop-
-              qdcount-is-one-04, 22 June 2024,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-dnsop-
-              qdcount-is-one-04>.
-
    [RFC1035]  Mockapetris, P., "Domain names - implementation and
               specification", STD 13, RFC 1035, DOI 10.17487/RFC1035,
               November 1987, <https://www.rfc-editor.org/rfc/rfc1035>.
@@ -302,6 +295,8 @@ Table of Contents
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+   [RFC9619]  "*** BROKEN REFERENCE ***".
 
 6.2.  Informative References
 
