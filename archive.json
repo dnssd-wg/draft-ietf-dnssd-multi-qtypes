@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-07-23T01:16:03.966645+00:00",
+  "timestamp": "2024-07-25T01:15:58.951113+00:00",
   "repo": "dnssd-wg/draft-ietf-dnssd-multi-qtypes",
   "labels": [
     {
@@ -71,21 +71,21 @@
       "id": "MDExOlB1bGxSZXF1ZXN0MjAwODc4MjA5",
       "title": "include DNSSEC RRs for all QTn's",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes/pull/2",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "samuelweiler",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "If some don't exist, then there will be a negative answer proof (an NSEC or NSEC3 RR).  I'm still wondering if there are weird edge cases here....",
       "createdAt": "2018-07-12T03:20:42Z",
-      "updatedAt": "2018-07-19T14:54:37Z",
+      "updatedAt": "2024-07-25T00:45:42Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-multi-qtypes",
       "baseRefName": "master",
       "baseRefOid": "1e429585d3174a38123e1d565d03dab5a084abd5",
       "headRepository": "samuelweiler/draft-bellis-dnsext-multi-qtypes",
       "headRefName": "patch-1",
       "headRefOid": "80ffbfab1d246028a8a9f545bf27e6654a8d5514",
-      "closedAt": null,
+      "closedAt": "2024-07-25T00:45:41Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -124,6 +124,13 @@
           "body": "It's in the following paragraphs:\r\n\r\n> A negative answer from a signed zone MUST contain the appropriate authenticated denial of existence records, per {{!RFC4034}} and {{!RFC5155}}.\r\n\r\nIt could probably be made more explicit that this also applies to proof of non-existence for QTYPEs and not just the QNAME.",
           "createdAt": "2018-07-19T14:53:50Z",
           "updatedAt": "2018-07-19T14:54:37Z"
+        },
+        {
+          "author": "raybellis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This has been resolved by the rewrite of section 3.2",
+          "createdAt": "2024-07-25T00:45:41Z",
+          "updatedAt": "2024-07-25T00:45:41Z"
         }
       ],
       "reviews": []
@@ -161,26 +168,42 @@
       "id": "PR_kwDOA8v66c52C3cG",
       "title": "Add note about non-applicability to mDNS",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes/pull/4",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "RemiNVG",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "As this draft is being discussed in the dnssd group, one might think that it applies to mDNS queries commonly used for DNS service discovery as well, which is not actually the case. I think clarification would help; at least I was confused by that point and had to confirm by email.\r\n\r\nSome notes about the context of this draft in the dnssd WG would help as well, maybe someone else can add a bit of context around that afterwards.",
       "createdAt": "2024-07-22T05:54:51Z",
-      "updatedAt": "2024-07-22T05:54:52Z",
+      "updatedAt": "2024-07-23T16:44:31Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-multi-qtypes",
       "baseRefName": "master",
       "baseRefOid": "265073503d2ac60f2b810054f9f67d212366ad90",
       "headRepository": "RemiNVG/draft-ietf-dnssd-multi-qtypes",
       "headRefName": "mdns_applicability",
       "headRefOid": "e0e4b7c890fe1e252d6e51cacfe0236967a91aaa",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2024-07-23T16:44:31Z",
+      "mergedAt": "2024-07-23T16:44:31Z",
+      "mergedBy": "raybellis",
+      "mergeCommit": {
+        "oid": "330459212dd486400fc6e44705168ee9c0698a07"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOA8v66c6CzZkj",
+          "commit": {
+            "abbreviatedOid": "e0e4b7c"
+          },
+          "author": "raybellis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-07-23T16:42:22Z",
+          "updatedAt": "2024-07-23T16:42:22Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
