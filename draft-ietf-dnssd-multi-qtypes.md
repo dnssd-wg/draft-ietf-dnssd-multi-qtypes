@@ -1,6 +1,6 @@
 ---
 title: DNS Multiple QTYPEs
-docname: draft-ietf-dnssd-multi-qtypes-02
+docname: draft-ietf-dnssd-multi-qtypes-latest
 submissiontype: IETF
 number:
 date:
@@ -50,9 +50,9 @@ records for a domain name together, rather than having to issue
 multiple queries.
 
 The DNS wire protocol in theory supported having multiple questions in a
-single packet, but in practise this does not work.  In
-{{!I-D.draft-ietf-dnsop-qdcount-is-one}}, {{!RFC1035}} is updated to only
-permit a single question in a QUERY (OpCode=0) request.
+single packet, but in practise this does not work.  In {{!RFC9619}},
+{{!RFC1035}} is updated to only permit a single question in a QUERY
+(OpCode=0) request.
 
 Sending QTYPE=ANY does not guarantee that all RRsets will be returned.
 {{?RFC8482}} specifies that responders may return a single RRset of
