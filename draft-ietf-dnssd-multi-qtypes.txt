@@ -4,8 +4,8 @@
 
 DNSSD                                                          R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                            25 July 2024
-Expires: 26 January 2025
+Intended status: Standards Track                            31 July 2024
+Expires: 1 February 2025
 
 
                           DNS Multiple QTYPEs
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 January 2025.
+   This Internet-Draft will expire on 1 February 2025.
 
 Copyright Notice
 
@@ -169,15 +169,17 @@ Table of Contents
    If MQType-Query is received in any inbound DNS message with an OpCode
    other than QUERY (0) the server MUST return a FORMERR response.
 
-   A server that receives an MQTYPE-Response option in a query or that
-   receives more than one MQTYPE-Query option MUST return a FORMERR
-   response.
+   A server that receives an MQTYPE-Response option in any inbound DNS
+   message MUST return a FORMERR response.
 
-   If any duplicate QTx is received in the query (or one duplicating the
-   primary QTYPE field) the server MUST return a FORMERR response.
+   A server that receives more than one MQTYPE-Query option in a query
+   MUST return a FORMERR response.
 
    If MQTYPE-Query is received in a query that contains no primary
    question (i.e.  QDCOUNT=0) the server MUST return a FORMERR response.
+
+   If any duplicate QTx (or one duplicating the primary QTYPE field) is
+   contained in a query the server MUST return a FORMERR response.
 
    If any invalid QTx is received in the query (e.g. one corresponding
    to a meta-RR) the server MUST return a FORMERR response.
@@ -296,7 +298,9 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-   [RFC9619]  "*** BROKEN REFERENCE ***".
+   [RFC9619]  Bellis, R. and J. Abley, "In the DNS, QDCOUNT Is (Usually)
+              One", RFC 9619, DOI 10.17487/RFC9619, July 2024,
+              <https://www.rfc-editor.org/rfc/rfc9619>.
 
 6.2.  Informative References
 
