@@ -197,7 +197,7 @@ option is unsupported by the server and SHOULD process the response as
 if the MQTYPE-Query option had not been used.
 
 If the MQTYPE-Response option is present more than once or if a QTx
-value is duplicate the client MUST treat the answer as invalid
+value is duplicated the client MUST treat the answer as invalid
 (equivalent to FORMERR)
 
 The client SHOULD subsequently initiate standalone queries (i.e. without
