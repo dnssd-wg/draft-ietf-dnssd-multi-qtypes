@@ -120,14 +120,17 @@ real resource records, and MUST NOT refer to pseudo RR types such as
 If MQType-Query is received in any inbound DNS message with an OpCode
 other than QUERY (0) the server MUST return a FORMERR response.
 
-A server that receives an MQTYPE-Response option in a query or that
-receives more than one MQTYPE-Query option MUST return a FORMERR response.
+A server that receives an MQTYPE-Response option in any inbound DNS
+message MUST return a FORMERR response.
 
-If any duplicate QTx is received in the query (or one duplicating the
-primary QTYPE field) the server MUST return a FORMERR response.
+A server that receives more than one MQTYPE-Query option in a query MUST
+return a FORMERR response.
 
 If MQTYPE-Query is received in a query that contains no primary question
 (i.e. QDCOUNT=0) the server MUST return a FORMERR response.
+
+If any duplicate QTx (or one duplicating the primary QTYPE field) is
+contained in a query the server MUST return a FORMERR response.
 
 If any invalid QTx is received in the query (e.g. one corresponding to a
 meta-RR) the server MUST return a FORMERR response.
