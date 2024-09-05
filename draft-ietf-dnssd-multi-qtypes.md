@@ -219,10 +219,10 @@ Absence of QTx values which were requested by client but are not present
 in MQTYPE-Response option indicates that:
 
 - the server was unwilling to process the request (e.g. because a limit
-was exceeded)
+was exceeded), and/or
 
 - the individual responses could not be combined into one message
-because of RCODE or other flag mismatches
+because of RCODE or other flag mismatches, and/or
 
 - the message size limit would be exceeded
 
