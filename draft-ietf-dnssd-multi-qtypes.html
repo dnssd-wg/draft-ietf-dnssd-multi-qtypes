@@ -11,12 +11,12 @@
 DNS record types to be delivered alongside the primary record type
 specified in the question section of a DNS query (OpCode=0). 
     " name="description">
-<meta content="xml2rfc 3.22.0" name="generator">
+<meta content="xml2rfc 3.23.0" name="generator">
 <meta content="DNS" name="keyword">
 <meta content="resource record" name="keyword">
 <meta content="draft-ietf-dnssd-multi-qtypes-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.22.0
+  xml2rfc 3.23.0
     Python 3.12.3
     ConfigArgParse 1.7
     google-i18n-address 3.1.0
@@ -27,7 +27,7 @@ specified in the question section of a DNS query (OpCode=0).
     pycountry 22.3.5
     PyYAML 6.0.1
     requests 2.32.3
-    setuptools 69.5.1
+    setuptools 70.3.0
     wcwidth 0.2.13
 -->
 <link href="draft-ietf-dnssd-multi-qtypes.xml" rel="alternate" type="application/rfc+xml">
@@ -1027,11 +1027,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">DNS Multiple QTYPEs</td>
-<td class="right">July 2024</td>
+<td class="right">September 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Bellis</td>
-<td class="center">Expires 1 February 2025</td>
+<td class="center">Expires 9 March 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1044,12 +1044,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-dnssd-multi-qtypes-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-07-31" class="published">31 July 2024</time>
+<time datetime="2024-09-05" class="published">5 September 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-02-01">1 February 2025</time></dd>
+<dd class="expires"><time datetime="2025-03-09">9 March 2025</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1101,7 +1101,7 @@ specified in the question section of a DNS query (OpCode=0).<a href="#section-ab
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 1 February 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 9 March 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1358,11 +1358,38 @@ MQTYPE-Query option, the client <span class="bcp14">MUST</span> treat the respon
 option is unsupported by the server and <span class="bcp14">SHOULD</span> process the response as
 if the MQTYPE-Query option had not been used.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
 <p id="section-3.3-3">If the MQTYPE-Response option is present more than once or if a QTx
-value is duplicated the client <span class="bcp14">MUST</span> treat the answer as invalid
-(equivalent to FORMERR)<a href="#section-3.3-3" class="pilcrow">¶</a></p>
-<p id="section-3.3-4">The client <span class="bcp14">SHOULD</span> subsequently initiate standalone queries (i.e. without
-using the MQTYPE-Query option) for any QTx value that did not generate a
-negative answer.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
+value is duplicated (or duplicates the primary QTYPE field) the client
+<span class="bcp14">MUST</span> treat the answer as invalid (equivalent to FORMERR)<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3-4">The Question section and the list of types present in the
+MQTYPE-Response option indicates the list of (QNAME, QCLASS, qtypes)
+combinations which are completely contained within the received
+response.  The answers to all query combinations share the same RCODE
+and all other flags.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
+<p id="section-3.3-5">All RRs required by existing DNS specifications are expected to be
+present in the respective sections of the DNS message, including proofs
+of nonexistence where required. The client <span class="bcp14">MUST NOT</span> rely on any
+particular order of RRs in the message sections.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.3-6">Clients <span class="bcp14">MUST</span> take into account that individual RRs might originate from
+different DNS zones and that proofs of non-existence might have been
+produced by different signers.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
+<p id="section-3.3-7">Absence of QTx values which were requested by client but are not present
+in MQTYPE-Response option indicates that:<a href="#section-3.3-7" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.3-8.1">
+            <p id="section-3.3-8.1.1">the server was unwilling to process the request (e.g. because a limit
+was exceeded)<a href="#section-3.3-8.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.3-8.2">
+            <p id="section-3.3-8.2.1">the individual responses could not be combined into one message
+because of RCODE or other flag mismatches<a href="#section-3.3-8.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.3-8.3">
+            <p id="section-3.3-8.3.1">the message size limit would be exceeded<a href="#section-3.3-8.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-3.3-9">The client <span class="bcp14">SHOULD</span> subsequently initiate standalone queries (e.g. without
+using the MQTYPE-Query option) for any QTx value which was requested but
+is missing in the response.<a href="#section-3.3-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
