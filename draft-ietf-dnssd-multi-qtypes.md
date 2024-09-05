@@ -197,12 +197,38 @@ option is unsupported by the server and SHOULD process the response as
 if the MQTYPE-Query option had not been used.
 
 If the MQTYPE-Response option is present more than once or if a QTx
-value is duplicated the client MUST treat the answer as invalid
-(equivalent to FORMERR)
+value is duplicated (or duplicates the primary QTYPE field) the client
+MUST treat the answer as invalid (equivalent to FORMERR)
 
-The client SHOULD subsequently initiate standalone queries (i.e. without
-using the MQTYPE-Query option) for any QTx value that did not generate a
-negative answer.
+The Question section and the list of types present in the
+MQTYPE-Response option indicates the list of (QNAME, QCLASS, qtypes)
+combinations which are completely contained within the received
+response.  The answers to all query combinations share the same RCODE
+and all other flags.
+
+All RRs required by existing DNS specifications are expected to be
+present in the respective sections of the DNS message, including proofs
+of nonexistence where required. The client MUST NOT rely on any
+particular order of RRs in the message sections.
+
+Clients MUST take into account that individual RRs might originate from
+different DNS zones and that proofs of non-existence might have been
+produced by different signers.
+
+Absence of QTx values which were requested by client but are not present
+in MQTYPE-Response option indicates that:
+
+- the server was unwilling to process the request (e.g. because a limit
+was exceeded)
+
+- the individual responses could not be combined into one message
+because of RCODE or other flag mismatches
+
+- the message size limit would be exceeded
+
+The client SHOULD subsequently initiate standalone queries (e.g. without
+using the MQTYPE-Query option) for any QTx value which was requested but
+is missing in the response.
 
 # Security Considerations
 
