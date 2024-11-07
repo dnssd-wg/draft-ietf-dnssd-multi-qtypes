@@ -109,15 +109,16 @@ OPTION-DATA: Option specific, as below:
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
 QT: a (potentially empty) list of 2 byte fields (QTx) in network order
-(MSB first) each specifying a DNS RR type.  The RR types MUST be for
-real resource records, and MUST NOT refer to pseudo RR types such as
-"OPT", "IXFR", "TSIG", "*", etc.
+(MSB first) each specifying a DNS RRTYPE.  The RRTYPEs MUST be for
+real resource records, and MUST NOT refer to Meta RRTYPEs such as
+"OPT" and those from the reserved range 128 - 255, e.g. "IXFR", "TSIG",
+"*", etc.
 
 ## Server Handling
 
 ### Request Parsing
 
-If MQType-Query is received in any inbound DNS message with an OpCode
+If MQTYPE-Query is received in any inbound DNS message with an OpCode
 other than QUERY (0) the server MUST return a FORMERR response.
 
 A server that receives an MQTYPE-Response option in any inbound DNS
@@ -133,7 +134,7 @@ If any duplicate QTx (or one duplicating the primary QTYPE field) is
 contained in a query the server MUST return a FORMERR response.
 
 If any invalid QTx is received in the query (e.g. one corresponding to a
-meta-RR) the server MUST return a FORMERR response.
+Meta RRTYPE) the server MUST return a FORMERR response.
 
 ### Response Generation
 
@@ -180,8 +181,8 @@ then the server MUST NOT include the respective QTx in the
 MQTYPE-Response list and MAY stop processing further QTx combinations.
 
 If all RRs for a single QTx combination fit into the message then the
-server MUST include respective QTx in the MQTYPE-Response list to
-indicate that given query type was completely processed.
+server MUST include the respective QTx in the MQTYPE-Response list to
+indicate that the given query type was completely processed.
 
 ## Client Response Processing
 
