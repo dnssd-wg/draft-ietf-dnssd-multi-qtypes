@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-07T01:24:44.698215+00:00",
+  "timestamp": "2024-11-10T01:36:11.438335+00:00",
   "repo": "dnssd-wg/draft-ietf-dnssd-multi-qtypes",
   "labels": [
     {
@@ -45,15 +45,15 @@
       "id": "MDU6SXNzdWUzNDA0NzQ5MDU=",
       "title": "name the full set of pseudo RR types",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes/issues/1",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "samuelweiler",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "or cite some other list of them.\r\n\r\n\"...MUST NOT refer to a pseudo RR type such as \"OPT\", \"IXFR\", \"TSIG\", \"*\", etc....\"",
       "createdAt": "2018-07-12T03:16:47Z",
-      "updatedAt": "2018-07-13T18:55:23Z",
-      "closedAt": null,
+      "updatedAt": "2024-11-07T09:18:41Z",
+      "closedAt": "2024-11-07T09:18:41Z",
       "comments": [
         {
           "author": "raybellis",
