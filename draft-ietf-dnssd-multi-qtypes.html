@@ -11,21 +11,21 @@
 DNS record types to be delivered alongside the primary record type
 specified in the question section of a DNS query (OpCode=0). 
     " name="description">
-<meta content="xml2rfc 3.24.0" name="generator">
+<meta content="xml2rfc 3.25.0" name="generator">
 <meta content="DNS" name="keyword">
 <meta content="resource record" name="keyword">
 <meta content="draft-ietf-dnssd-multi-qtypes-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.24.0
-    Python 3.12.7
+  xml2rfc 3.25.0
+    Python 3.12.8
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.4
     lxml 5.3.0
     platformdirs 4.3.6
-    pycountry 22.3.5
-    PyYAML 6.0.1
+    pycountry 24.6.1
+    PyYAML 6.0.2
     requests 2.32.3
     setuptools 70.3.0
     wcwidth 0.2.13
@@ -281,6 +281,12 @@ body {
 }
 
 /* headings */
+section {
+  clear: both;
+}
+.section-number {
+  padding-right: 0.5em;
+}
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-title);
   font-weight: 680;
@@ -312,6 +318,7 @@ h4, h5, h6 {
 /* general structure */
 .author {
   padding-bottom: 0.3em;
+  vertical-align: top;
 }
 #abstract+p {
   font-size: 18px;
@@ -389,25 +396,26 @@ svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
 ol, ul {
   padding: 0;
   margin: 0 0 0.5em 2em;
-}
-:is(ol, ul) :is(ol, ul) {
-  margin-left: 1em;
+  & :is(ol, ul) {
+    margin-left: 1em;
+  }
 }
 li {
   margin: 0 0 0.25em 0;
 }
-.ulCompact li {
-  margin: 0;
-}
 ul.empty, .ulEmpty {
   list-style-type: none;
-}
-ul.empty li, .ulEmpty li {
-  margin-top: 0.5em;
+  & li {
+    margin-top: 0.5em;
+  }
 }
 :is(ul, ol).compact, .ulCompact, .olCompact {
-  line-height: 1;
   margin: 0 0 0 2em;
+  & li {
+    margin: 0;
+    & :first-child { margin-top: 0; }
+    & :last-child { margin-bottom: 0; }
+  }
 }
 
 /* definition lists */
@@ -415,38 +423,39 @@ dl {
   clear: left;
   --indent: 3ch;
   /* --indent: attr(indent ch); not supported in any browser, but we can dream */
-}
-dl.olPercent {
-  --indent: 5ch;
+  &.olPercent {
+    --indent: 5ch;
+    & > dt {
+      min-width: calc(var(--indent) - 2ch);
+    }
+  }
+  &.olPercent > dt {
+    float: none;
+  }
+
+  dl > dd > & {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+  }
 }
 dl > dt {
   float: left;
   margin-right: 2ch;
   min-width: 8ch;
 }
-dl.dlNewline > dt {
-  float: none;
-}
 dl > dd {
   margin-bottom: .8em;
   margin-left: var(--indent) !important; /* stupid element overrides */
   min-height: 2ex;
 }
-dl.olPercent > dt {
-  min-width: calc(var(--indent) - 2ch);
-}
 :is(dl.compact, .dlCompact) > dd {
   margin-bottom: 0;
-}
-:is(dl.compact, .dlCompact) > dd > :is(:first-child, .break:first-child + *) {
-  margin-top: 0;
-}
-:is(dl.compact, .dlCompact) > dd > :is(:last-child) {
-  margin-bottom: 0;
-}
-dl > dd > dl {
-  margin-top: 0.5em;
-  margin-bottom: 0;
+  & > :is(:first-child, .break:first-child + *) {
+    margin-top: 0;
+  }
+  & > :is(:last-child) {
+    margin-bottom: 0;
+  }
 }
 :is(dd, span).break {
   display: none;
@@ -510,6 +519,7 @@ figcaption, caption {
   font-style: italic;
   margin: 0.5em 1.5em;
   text-align: left;
+  caption-side: bottom;
 }
 @media screen {
   /* Auto-collapse boilerplate. */
@@ -527,7 +537,11 @@ figcaption, caption {
   }
   pre, svg {
     display: inline-block;
-    overflow-x: auto;
+    /* In the horizontal direction, sometimes people make over-sized figures.
+       Scrollbars for those is therefore necessary: auto adds them as necessary..
+       In the vertical direction, the line-height can combine with the font
+       asender/descender height to produce scrollbars: hidden avoids that. */
+    overflow: auto hidden;
   }
   pre {
     max-width: 100%;
@@ -564,6 +578,7 @@ cite {
 
 /* tables */
 table {
+  width: auto;
   max-width: 100%;
   margin: 0 0 1em;
   border-collapse: collapse;
@@ -578,6 +593,16 @@ table.center {
 table.left {
   margin-right: auto;
 }
+table .text-left {
+  text-align: left;
+}
+table .text-center {
+  text-align: center;
+}
+table .text-right {
+  text-align: right;
+}
+
 thead, tbody {
   border: 1px solid var(--line-color);
 }
@@ -608,9 +633,11 @@ a.pilcrow {
   margin-left: 3px;
   opacity: 0.2;
   user-select: none;
+  &[href] {
+    color: var(--pilcrow-weak);
+    &:hover { text-decoration: none; }
+  }
 }
-a.pilcrow[href] { color: var(--pilcrow-weak); }
-a.pilcrow[href]:hover { text-decoration: none; }
 @media not print {
   :hover > a.pilcrow {
     opacity: 1;
@@ -650,26 +677,28 @@ sub, sup {
   font-size: var(--small-font-size);
   line-height: 18px;
   --identifier-width: 15ch;
-}
-#identifiers dt {
-  width: var(--identifier-width);
-  min-width: var(--identifier-width);
-  clear: left;
-  float: left;
-  text-align: right;
-  margin-right: 1ch;
-}
-#identifiers dd {
-  margin: 0;
-  margin-left: calc(1em + var(--identifier-width)) !important;
-  min-width: 5em;
-}
-#identifiers .authors .author {
-  display: inline-block;
-  margin-right: 1.5em;
-}
-#identifiers .authors .org {
-  font-style: italic;
+  & dt {
+    width: var(--identifier-width);
+    min-width: var(--identifier-width);
+    clear: left;
+    float: left;
+    text-align: right;
+    margin-right: 1ch;
+  }
+  & dd {
+    margin: 0;
+    margin-left: calc(1em + var(--identifier-width)) !important;
+    min-width: 5em;
+  }
+  & .authors {
+    & .author {
+      display: inline-block;
+      margin-right: 1.5em;
+    }
+    & .org {
+      font-style: italic;
+    }
+  }
 }
 
 /* The prepared/rendered info at the very bottom of the page */
@@ -680,9 +709,6 @@ sub, sup {
   margin-top: 2em;
 }
 .docInfo .prepared {
-  float: left;
-}
-.docInfo .prepared {
   float: right;
 }
 
@@ -690,53 +716,48 @@ sub, sup {
 #toc {
   padding: 0.75em 0 2em 0;
   margin-bottom: 1em;
-}
-@media screen {
-  #toc nav {
-    font-family: var(--font-title);
-    font-weight: 360;
+
+  & nav {
+    & ul {
+      margin: 0 0.5em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    & li {
+      line-height: 1.3em;
+      margin: 2px 0;
+      padding-left: 1.2em;
+      text-indent: -1.2em;
+    }
+  }
+  & a.xref {
+    white-space: normal;
   }
 }
-#toc nav ul {
-  margin: 0 0.5em 0 0;
-  padding: 0;
-  list-style: none;
-}
-#toc nav li {
-  line-height: 1.3em;
-  margin: 2px 0;
-  padding-left: 1.2em;
-  text-indent: -1.2em;
-}
-#toc a.xref {
-  white-space: normal;
-}
-/* references */
-.references dt {
-  text-align: right;
-  font-weight: bold;
-  min-width: 10ch;
-  margin-right: 1.5ch;
-}
-.references dt:target::before {
-  content: "⇒";
-  width: 15px;
-  margin: 0 10px 0 -25px;
-}
-.references dd {
-  margin-left: 12ch !important;
-  overflow: auto;
+
+.references {
+  & > dt {
+    text-align: right;
+    font-weight: bold;
+    min-width: 10ch;
+    margin-right: 1.5ch;
+    &:target::before {
+      content: "⇒";
+      margin: 0 10px 0 -25px;
+    }
+  }
+  & > dd {
+    margin-left: 12ch !important;
+    overflow: visible;
+    & .refInstance {
+      margin-bottom: 0.8em;
+    }
+    & .ascii {
+      margin-bottom: 0.25em;
+    }
+  }
 }
 
-.refInstance {
-  margin-bottom: 1.25em;
-}
-
-.references .ascii {
-  margin-bottom: 0.25em;
-}
-
-/* index */
 #rfc\.index\.index + ul {
   margin-left: 0;
 }
@@ -744,21 +765,33 @@ sub, sup {
 /* authors */
 address.vcard {
   font-style: normal;
-  margin: 1em 0;
+  max-width: 20em;
+  margin: 1em auto 1em 0;
+
+  & .nameRole {
+    font-weight: 700;
+    margin-left: 0;
+  }
+  & .label {
+    margin: 0.5em 0;
+  }
+  & .type {
+    display: none;
+  }
+  & .alternative-contact {
+    margin: 0.5em 0 0.25em 0;
+  }
+  & .non-ascii {
+    margin: 0 0 0 2em;
+  }
+  & div.left {
+    text-align: left;
+  }
+  & div.right {
+    text-align: right;
+  }
 }
-address.vcard .nameRole {
-  font-weight: 700;
-  margin-left: 0;
-}
-address.vcard .label {
-  margin: 0.5em 0;
-}
-address.vcard .type {
-  display: none;
-}
-.alternative-contact {
-  margin: 1.5em 0 1em;
-}
+
 hr.addr {
   border-top: 1px dashed;
   margin: 0;
@@ -780,6 +813,7 @@ hr.addr {
   }
 }
 
+/* Comments */
 .rfcEditorRemove p:first-of-type {
   font-style: italic;
 }
@@ -790,7 +824,31 @@ hr.addr {
 .crefSource {
   font-style: italic;
 }
-/* alternative layout for smaller screens */
+
+@media screen {
+  #toc nav {
+    font-family: var(--font-title);
+    font-weight: 360;
+    & > ul { margin-bottom: 2em; }
+    & ul {
+      margin: 0 0 0 4px;
+      & :is(p, li) {
+        margin: 2px 0;
+      }
+    }
+  }
+  #toc a.toplink {
+    float: right;
+  }
+}
+@media not screen {
+  #toc a.toplink {
+    display: none;
+  }
+}
+
+
+/* TOC layout for smaller screens */
 @media screen and (max-width: 929px) {
   #toc {
     position: fixed;
@@ -801,9 +859,6 @@ hr.addr {
     margin: 0;
     border-bottom: 1px solid #ccc;
     opacity: 0.6;
-  }
-  #toc.active {
-      opacity: 1;
   }
   #toc h2 {
     margin: 0;
@@ -816,17 +871,17 @@ hr.addr {
     background-color: #444;
     color: white;
     cursor: pointer;
-  }
-  #toc h2::before { /* css hamburger */
-    float: right;
-    position: relative;
-    width: 1em;
-    height: 1px;
-    left: -164px;
-    margin: 8px 0 0 0;
-    background: white none repeat scroll 0 0;
-    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
-    content: "";
+    &::before { /* css hamburger */
+      float: right;
+      position: relative;
+      width: 1em;
+      height: 1px;
+      left: -164px;
+      margin: 8px 0 0 0;
+      background: white none repeat scroll 0 0;
+      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+      content: "";
+    }
   }
   #toc nav {
     display: none;
@@ -837,14 +892,13 @@ hr.addr {
     height: calc(100vh - 48px);
     border-left: 1px solid #ddd;
   }
-  #toc.active nav {
-    display: block;
+  #toc.active {
+    opacity: 1;
+    & nav { display: block; }
   }
   /* Make the collapsed ToC header render white on gray also when it's a link */
   #toc h2 a,
-  #toc h2 a:link,
-  #toc h2 a:focus,
-  #toc h2 a:hover,
+  #toc h2 a:is(:link, :focus, :hover),
   #toc a.toplink,
   #toc a.toplink:hover {
     color: white;
@@ -852,11 +906,11 @@ hr.addr {
     text-decoration: none;
   }
   #toc a.toplink {
-    margin-top: 2px;
+    margin: 2px 0.5em 0;
   }
 }
 
-/* alternative layout for wide screens */
+/* TOC layout for wide screens */
 @media screen and (min-width: 930px) {
   body {
     padding-right: 360px;
@@ -885,20 +939,12 @@ hr.addr {
     overscroll-behavior: contain;
     scrollbar-width: thin;
   }
-  #toc nav > ul  {
-    margin-bottom: 2em;
-  }
-  #toc ul {
-    margin: 0 0 0 4px;
-    font-size: var(--small-font-size);
-  }
-  #toc ul :is(p, li) {
-    margin: 2px 0;
-    line-height: 22px;
-  }
   img { /* future proofing */
     max-width: 100%;
     height: auto;
+  }
+  #toc a.toplink {
+    margin: 8px 0.5em 0;
   }
 }
 
@@ -941,9 +987,6 @@ hr.addr {
   td {
     border-top: 1px solid #ddd;
   }
-  .toplink {
-    display: none;
-  }
 }
 
 @page :first {
@@ -966,82 +1009,6 @@ hr.addr {
   size: A4;
   margin-bottom: 45mm;
   padding-top: 20px;
-}
-
-/* Changes introduced to fix issues found during implementation */
-
-/* Separate body from document info even without intervening H1 */
-section {
-  clear: both;
-}
-
-/* Top align author divs, to avoid names without organization dropping level with org names */
-.author {
-  vertical-align: top;
-}
-
-/* Style section numbers with more space between number and title */
-.section-number {
-  padding-right: 0.5em;
-}
-
-/* Add styling for a link in the ToC that points to the top of the document */
-a.toplink {
-  float: right;
-  margin: 8px 0.5em 0;
-}
-
-/* Provide styling for table cell text alignment */
-table .text-left {
-  text-align: left;
-}
-table .text-center {
-  text-align: center;
-}
-table .text-right {
-  text-align: right;
-}
-
-/* Make the alternative author contact information look less like just another
-   author, and group it closer with the primary author contact information */
-.alternative-contact {
-  margin: 0.5em 0 0.25em 0;
-}
-address .non-ascii {
-  margin: 0 0 0 2em;
-}
-
-/* With it being possible to set tables with alignment
-  left, center, and right, { width: 100%; } does not make sense */
-table {
-  width: auto;
-}
-
-/* Avoid reference text that sits in a block with very wide left margin,
-   because of a long floating dt label.*/
-.references dd {
-  overflow: visible;
-}
-
-/* Control caption placement */
-caption {
-  caption-side: bottom;
-}
-
-/* Limit the width of the author address vcard, so names in right-to-left
-   script don't end up on the other side of the page. */
-
-address.vcard {
-  max-width: 20em;
-  margin-right: auto;
-}
-
-/* For address alignment dependent on LTR or RTL scripts */
-address div.left {
-  text-align: left;
-}
-address div.right {
-  text-align: right;
 }
 
 /* Dark mode. */
@@ -1080,11 +1047,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">DNS Multiple QTYPEs</td>
-<td class="right">November 2024</td>
+<td class="right">December 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Bellis</td>
-<td class="center">Expires 11 May 2025</td>
+<td class="center">Expires 22 June 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1097,12 +1064,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-dnssd-multi-qtypes-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-11-07" class="published">7 November 2024</time>
+<time datetime="2024-12-19" class="published">19 December 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-05-11">11 May 2025</time></dd>
+<dd class="expires"><time datetime="2025-06-22">22 June 2025</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1154,7 +1121,7 @@ specified in the question section of a DNS query (OpCode=0).<a href="#section-ab
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 11 May 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 22 June 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1218,21 +1185,35 @@ specified in the question section of a DNS query (OpCode=0).<a href="#section-ab
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-references" class="internal xref">References</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
-                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref"></a><a href="#name-acknowledgements" class="internal xref">Acknowledgements</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
-                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref"></a><a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref"></a><a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref"></a><a href="#name-informative-references" class="internal xref">Informative References</a></p>
 </li>
             </ul>
 </li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgements" class="internal xref">Acknowledgements</a></p>
-</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-examples" class="internal xref">Examples</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-stub-query-for-a-with-mqtyp" class="internal xref">Stub query for A with MQType-Request for AAAA + HTTPS</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-stub-query-for-ds-with-mqty" class="internal xref">Stub query for DS with MQType-Request for DNSKEY</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.3">
+                <p id="section-toc.1-1.8.2.3.1"><a href="#appendix-A.3" class="auto internal xref">A.3</a>.  <a href="#name-recursive-query-for-ds-with" class="internal xref">Recursive query for DS with MQType-Request for NS</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
 </li>
         </ul>
 </nav>
@@ -1343,8 +1324,8 @@ other than QUERY (0) the server <span class="bcp14">MUST</span> return a FORMERR
 message <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.2.1-2" class="pilcrow">¶</a></p>
 <p id="section-3.2.1-3">A server that receives more than one MQTYPE-Query option in a query <span class="bcp14">MUST</span>
 return a FORMERR response.<a href="#section-3.2.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-4">If MQTYPE-Query is received in a query that contains no primary question
-(i.e. QDCOUNT=0) the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.2.1-4" class="pilcrow">¶</a></p>
+<p id="section-3.2.1-4">If an MQTYPE-Query option is received in a query that contains no primary
+question (i.e. QDCOUNT=0) the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.2.1-4" class="pilcrow">¶</a></p>
 <p id="section-3.2.1-5">If any duplicate QTx (or one duplicating the primary QTYPE field) is
 contained in a query the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.2.1-5" class="pilcrow">¶</a></p>
 <p id="section-3.2.1-6">If any invalid QTx is received in the query (e.g. one corresponding to a
@@ -1364,7 +1345,8 @@ is truncated (TC=1).<a href="#section-3.2.2-1" class="pilcrow">¶</a></p>
 the existing DNS sections.  The RCODE and all other flags (e.g. AA,
 AD, etc) <span class="bcp14">MUST</span> be determined at this time.<a href="#section-3.2.2-2" class="pilcrow">¶</a></p>
 <p id="section-3.2.2-3">If this initial response results in truncation (TC=1) then the
-additional queries specified in MQTYPE-Query <span class="bcp14">MUST NOT</span> be processed.<a href="#section-3.2.2-3" class="pilcrow">¶</a></p>
+additional queries specified in the MQTYPE-Query option <span class="bcp14">MUST NOT</span> be
+processed.<a href="#section-3.2.2-3" class="pilcrow">¶</a></p>
 <p id="section-3.2.2-4">After the initial response is prepared, the server <span class="bcp14">MUST</span> attempt to
 combine the responses for individual (QNAME, QCLASS, QTx) combinations
 into the response for the first query.<a href="#section-3.2.2-4" class="pilcrow">¶</a></p>
@@ -1373,7 +1355,7 @@ RCODE and other flags and check that they all match the values generated
 from the primary query.<a href="#section-3.2.2-5" class="pilcrow">¶</a></p>
 <p id="section-3.2.2-6">If any mismatch is detected the mismatching additional response <span class="bcp14">MUST NOT</span>
 be included in the final combined response and its QTx value <span class="bcp14">MUST NOT</span> be
-included in the MQTYPE-Response list.  This might happen, for example,
+included in the MQTYPE-Response option's list.  This might happen, for example,
 if the primary query resulted in a NOERROR response but a QTx query
 resulted in a SERVFAIL, or if the primary response has AA=0 but a QTx
 response has AA=1, such as might happen if the NS and DS records were
@@ -1388,10 +1370,11 @@ combination on apex where TYPE12345 is not present.<a href="#section-3.2.2-7" cl
 <p id="section-3.2.2-8">If message size (or other) limits do not allow all of the data obtained
 by querying for an additional QTx to be included in the final response
 then the server <span class="bcp14">MUST NOT</span> include the respective QTx in the
-MQTYPE-Response list and <span class="bcp14">MAY</span> stop processing further QTx combinations.<a href="#section-3.2.2-8" class="pilcrow">¶</a></p>
+MQTYPE-Response option's list and <span class="bcp14">MAY</span> stop processing further QTx
+combinations.<a href="#section-3.2.2-8" class="pilcrow">¶</a></p>
 <p id="section-3.2.2-9">If all RRs for a single QTx combination fit into the message then the
-server <span class="bcp14">MUST</span> include the respective QTx in the MQTYPE-Response list to
-indicate that the given query type was completely processed.<a href="#section-3.2.2-9" class="pilcrow">¶</a></p>
+server <span class="bcp14">MUST</span> include the respective QTx in the MQTYPE-Response option's list
+to indicate that the given query type was completely processed.<a href="#section-3.2.2-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1470,15 +1453,28 @@ EDNS0 Option Codes registry for MQTYPE-Query and MQTYPE-Response.  They
 should be consecutive, with the -Query option being an even number.<a href="#section-5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="sec-combined-references">
+<div id="acknowledgements">
 <section id="section-6">
+      <h2 id="name-acknowledgements">
+<a href="#name-acknowledgements" class="section-name selfRef">Acknowledgements</a>
+      </h2>
+<p id="section-6-1">The author wishes to thank the following for their feedback and reviews
+during the initial development of this document: Michael Graff, Olafur
+Gudmundsson, Matthijs Mekking, and Paul Vixie.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">In addition the author wishes to thank the following for subsequent
+review during discussion in the DNSSD Working Group: Chris Box, Stuart
+Cheshire, Esko Dijk, Ted Lemon, David Schinazi and Petr Spacek.<a href="#section-6-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-combined-references">
+<section id="section-7">
       <h2 id="name-references">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-6.1">
+<section id="section-7.1">
         <h3 id="name-normative-references">
-<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="RFC1035">[RFC1035]</dt>
@@ -1509,9 +1505,9 @@ should be consecutive, with the -Query option being an even number.<a href="#sec
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-6.2">
+<section id="section-7.2">
         <h3 id="name-informative-references">
-<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="RFC6762">[RFC6762]</dt>
@@ -1527,17 +1523,138 @@ should be consecutive, with the -Query option being an even number.<a href="#sec
 </div>
 </section>
 </div>
-<div id="acknowledgements">
+<div id="examples">
 <section id="appendix-A">
-      <h2 id="name-acknowledgements">
-<a href="#name-acknowledgements" class="section-name selfRef">Acknowledgements</a>
+      <h2 id="name-examples">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-examples" class="section-name selfRef">Examples</a>
       </h2>
-<p id="appendix-A-1">The author wishes to thank the following for their feedback and reviews
-during the initial development of this document: Michael Graff, Olafur
-Gudmundsson, Matthijs Mekking, and Paul Vixie.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
-<p id="appendix-A-2">In addition the author wishes to thank the following for subsequent
-review during discussion in the DNSSD Working Group: Chris Box, Stuart
-Cheshire, Esko Dijk, Ted Lemon, David Schinazi and Petr Spacek.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
+<p id="appendix-A-1">The examples below are shown as might be reported by the ISC Dig utility.
+For the purposes of brevity irrelevant content is omitted.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<div id="stub-query-for-a-with-mqtype-request-for-aaaa-https">
+<section id="appendix-A.1">
+        <h3 id="name-stub-query-for-a-with-mqtyp">
+<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-stub-query-for-a-with-mqtyp" class="section-name selfRef">Stub query for A with MQType-Request for AAAA + HTTPS</a>
+        </h3>
+<p id="appendix-A.1-1">In this example a stub resolver has requested the A record for
+www.example.com, along with an MQTYPE-Request option requesting AAAA and
+HTTPS records.  The stub resolver has also set the DO bit, indicating
+DNSSEC support.<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.1-2">The presence of the HTTPS QTYPE in the MQTYPE-Response option of the response
+coupled with its absence from the answer section indicates that the
+recursive server currently holds no data for this QTYPE.  The corresponding
+type fields in the NSEC3 record further provide a cryptographic proof of
+non-existence for the HTTPS QTYPE and the SOA record also indicates a
+"negative answer".<a href="#appendix-A.1-2" class="pilcrow">¶</a></p>
+<span id="name-a-aaaa-https"></span><div id="figaaaahttps">
+<figure id="figure-1">
+          <div class="alignLeft art-text artwork" id="appendix-A.1-3.1">
+<pre>
+;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 11111
+;; flags: qr rd ra ad
+;; QUERY: 1, ANSWER: 4, AUTHORITY: 4, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags: do; udp: 1232
+; MQTYPE-Response: AAAA HTTPS
+
+;; QUESTION SECTION:
+;www.example.com.         IN  A
+
+;; ANSWER SECTION:
+www.example.com.    2849  IN  A       192.0.2.1
+www.example.com.    2849  IN  RRSIG   A [...]
+www.example.com.    3552  IN  AAAA    3fff::1234
+www.example.com.    3552  IN  RRSIG   AAAA [...]
+
+;; AUTHORITY SECTION:
+example.com.        2830  IN  SOA     ns.example.com. [...]
+example.com.        2830  IN  RRSIG   SOA 13 2 [...]
+[...].example.com.  2830  IN  NSEC3   [...] A TXT AAAA RRSIG
+[...].example.com.  2830  IN  RRSIG   NSEC3 [...]
+</pre>
+</div>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-a-aaaa-https" class="selfRef">A + AAAA + HTTPS</a>
+          </figcaption></figure>
+</div>
+</section>
+</div>
+<div id="stub-query-for-ds-with-mqtype-request-for-dnskey">
+<section id="appendix-A.2">
+        <h3 id="name-stub-query-for-ds-with-mqty">
+<a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-stub-query-for-ds-with-mqty" class="section-name selfRef">Stub query for DS with MQType-Request for DNSKEY</a>
+        </h3>
+<p id="appendix-A.2-1">In this similar example, the primary QTYPE is for DS and the MQTYPE-Request
+field only contains DNSKEY.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.2-2">Both the DS and DNSKEY records are returned, along with their corresponding
+RRSIG records.<a href="#appendix-A.2-2" class="pilcrow">¶</a></p>
+<span id="name-stub-ds-dnskey"></span><div id="figdsdnskey">
+<figure id="figure-2">
+          <div class="alignLeft art-text artwork" id="appendix-A.2-3.1">
+<pre>
+;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 33333
+;; flags: qr rd ra ad
+;; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags: do; udp: 1232
+; MQTYPE-Response: DNSKEY
+
+;; QUESTION SECTION:
+;example.com.                 IN      DS
+
+;; ANSWER SECTION:
+example.com.        625   IN  DNSKEY  256 3 13 [...]
+example.com.        625   IN  DNSKEY  257 3 13 [...]
+example.com.        625   IN  RRSIG   DNSKEY [...] example.com. [...]
+example.com.      86185   IN  DS      370 13 2 [...]
+example.com.      86185   IN  RRSIG   DS [...] com. [...]
+</pre>
+</div>
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<a href="#name-stub-ds-dnskey" class="selfRef">Stub DS + DNSKEY</a>
+          </figcaption></figure>
+</div>
+</section>
+</div>
+<div id="recursive-query-for-ds-with-mqtype-request-for-ns">
+<section id="appendix-A.3">
+        <h3 id="name-recursive-query-for-ds-with">
+<a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-recursive-query-for-ds-with" class="section-name selfRef">Recursive query for DS with MQType-Request for NS</a>
+        </h3>
+<p id="appendix-A.3-1">In this instance, a recursive resolver is sending a DS record query to the
+parent zone's authoritative server and simultaneously requesting the NS
+records for the zone.<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.3-2">Since the DS record response is marked as authoritative (AA = 1) but the
+NS record data on the parent side of a zone cut is not authoritative
+(AA = 0) the server is unable to merge the responses, and the NS QTYPE
+is omitted from the MQTYPE-Response field.<a href="#appendix-A.3-2" class="pilcrow">¶</a></p>
+<span id="name-recursive-ds-ns"></span><div id="figdsns">
+<figure id="figure-3">
+          <div class="alignLeft art-text artwork" id="appendix-A.3-3.1">
+<pre>
+;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 33333
+;; flags: qr rd ra aa
+;; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags: do; udp: 1232
+; MQTYPE-Response: [empty]
+
+;; QUESTION SECTION:
+;example.com.             IN  DS
+
+;; ANSWER SECTION:
+example.com.      86185   IN  DS      370 13 2 [...]
+example.com.      86185   IN  RRSIG   DS [...] com. [...]
+</pre>
+</div>
+<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
+<a href="#name-recursive-ds-ns" class="selfRef">Recursive DS + NS</a>
+          </figcaption></figure>
+</div>
+</section>
+</div>
 </section>
 </div>
 <div id="authors-addresses">
