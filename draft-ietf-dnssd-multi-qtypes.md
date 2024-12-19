@@ -127,8 +127,8 @@ message MUST return a FORMERR response.
 A server that receives more than one MQTYPE-Query option in a query MUST
 return a FORMERR response.
 
-If MQTYPE-Query is received in a query that contains no primary question
-(i.e. QDCOUNT=0) the server MUST return a FORMERR response.
+If an MQTYPE-Query option is received in a query that contains no primary
+question (i.e. QDCOUNT=0) the server MUST return a FORMERR response.
 
 If any duplicate QTx (or one duplicating the primary QTYPE field) is
 contained in a query the server MUST return a FORMERR response.
@@ -148,7 +148,8 @@ the existing DNS sections.  The RCODE and all other flags (e.g. AA,
 AD, etc) MUST be determined at this time.
 
 If this initial response results in truncation (TC=1) then the
-additional queries specified in MQTYPE-Query MUST NOT be processed.
+additional queries specified in the MQTYPE-Query option MUST NOT be
+processed.
 
 After the initial response is prepared, the server MUST attempt to
 combine the responses for individual (QNAME, QCLASS, QTx) combinations
@@ -160,7 +161,7 @@ from the primary query.
 
 If any mismatch is detected the mismatching additional response MUST NOT
 be included in the final combined response and its QTx value MUST NOT be
-included in the MQTYPE-Response list.  This might happen, for example,
+included in the MQTYPE-Response option's list.  This might happen, for example,
 if the primary query resulted in a NOERROR response but a QTx query
 resulted in a SERVFAIL, or if the primary response has AA=0 but a QTx
 response has AA=1, such as might happen if the NS and DS records were
@@ -177,11 +178,12 @@ combination on apex where TYPE12345 is not present.
 If message size (or other) limits do not allow all of the data obtained
 by querying for an additional QTx to be included in the final response
 then the server MUST NOT include the respective QTx in the
-MQTYPE-Response list and MAY stop processing further QTx combinations.
+MQTYPE-Response option's list and MAY stop processing further QTx
+combinations.
 
 If all RRs for a single QTx combination fit into the message then the
-server MUST include the respective QTx in the MQTYPE-Response list to
-indicate that the given query type was completely processed.
+server MUST include the respective QTx in the MQTYPE-Response option's list
+to indicate that the given query type was completely processed.
 
 ## Client Response Processing
 
@@ -247,8 +249,6 @@ IANA is requested to assign two new values (TBD1 and TBD2) in the DNS
 EDNS0 Option Codes registry for MQTYPE-Query and MQTYPE-Response.  They
 should be consecutive, with the -Query option being an even number.
 
---- back
-
 # Acknowledgements
 {:numbered="false"}
 
@@ -259,3 +259,108 @@ Gudmundsson, Matthijs Mekking, and Paul Vixie.
 In addition the author wishes to thank the following for subsequent
 review during discussion in the DNSSD Working Group: Chris Box, Stuart
 Cheshire, Esko Dijk, Ted Lemon, David Schinazi and Petr Spacek.
+
+--- back
+
+# Examples
+
+The examples below are shown as might be reported by the ISC Dig utility.
+For the purposes of brevity irrelevant content is omitted.
+
+## Stub query for A with MQType-Request for AAAA + HTTPS
+
+In this example a stub resolver has requested the A record for
+www.example.com, along with an MQTYPE-Request option requesting AAAA and
+HTTPS records.  The stub resolver has also set the DO bit, indicating
+DNSSEC support.
+
+The presence of the HTTPS QTYPE in the MQTYPE-Response option of the response
+coupled with its absence from the answer section indicates that the
+recursive server currently holds no data for this QTYPE.  The corresponding
+type fields in the NSEC3 record further provide a cryptographic proof of
+non-existence for the HTTPS QTYPE and the SOA record also indicates a
+"negative answer".
+
+~~~~~~~~~~~
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 11111
+;; flags: qr rd ra ad
+;; QUERY: 1, ANSWER: 4, AUTHORITY: 4, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags: do; udp: 1232
+; MQTYPE-Response: AAAA HTTPS
+
+;; QUESTION SECTION:
+;www.example.com.         IN  A
+
+;; ANSWER SECTION:
+www.example.com.    2849  IN  A       192.0.2.1
+www.example.com.    2849  IN  RRSIG   A [...]
+www.example.com.    3552  IN  AAAA    3fff::1234
+www.example.com.    3552  IN  RRSIG   AAAA [...]
+
+;; AUTHORITY SECTION:
+example.com.        2830  IN  SOA     ns.example.com. [...]
+example.com.        2830  IN  RRSIG   SOA 13 2 [...]
+[...].example.com.  2830  IN  NSEC3   [...] A TXT AAAA RRSIG
+[...].example.com.  2830  IN  RRSIG   NSEC3 [...]
+~~~~~~~~~~~
+{: #figaaaahttps title="A + AAAA + HTTPS" }
+
+## Stub query for DS with MQType-Request for DNSKEY
+
+In this similar example, the primary QTYPE is for DS and the MQTYPE-Request
+field only contains DNSKEY.
+
+Both the DS and DNSKEY records are returned, along with their corresponding
+RRSIG records.
+
+~~~~~~~~~~~
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 33333
+;; flags: qr rd ra ad
+;; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags: do; udp: 1232
+; MQTYPE-Response: DNSKEY
+
+;; QUESTION SECTION:
+;example.com.                 IN      DS
+
+;; ANSWER SECTION:
+example.com.        625   IN  DNSKEY  256 3 13 [...]
+example.com.        625   IN  DNSKEY  257 3 13 [...]
+example.com.        625   IN  RRSIG   DNSKEY [...] example.com. [...]
+example.com.      86185   IN  DS      370 13 2 [...]
+example.com.      86185   IN  RRSIG   DS [...] com. [...]
+~~~~~~~~~~~
+{: #figdsdnskey title="Stub DS + DNSKEY" }
+
+## Recursive query for DS with MQType-Request for NS
+
+In this instance, a recursive resolver is sending a DS record query to the
+parent zone's authoritative server and simultaneously requesting the NS
+records for the zone.
+
+Since the DS record response is marked as authoritative (AA = 1) but the
+NS record data on the parent side of a zone cut is not authoritative
+(AA = 0) the server is unable to merge the responses, and the NS QTYPE
+is omitted from the MQTYPE-Response field.
+
+~~~~~~~~~~~
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 33333
+;; flags: qr rd ra aa
+;; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags: do; udp: 1232
+; MQTYPE-Response: [empty]
+
+;; QUESTION SECTION:
+;example.com.             IN  DS
+
+;; ANSWER SECTION:
+example.com.      86185   IN  DS      370 13 2 [...]
+example.com.      86185   IN  RRSIG   DS [...] com. [...]
+~~~~~~~~~~~
+{: #figdsns title="Recursive DS + NS" }
