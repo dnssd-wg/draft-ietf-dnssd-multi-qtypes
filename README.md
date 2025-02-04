@@ -1,6 +1,6 @@
 # DNS Multiple QTYPEs
 
-This is the working area for the IETF [DNSSD Working Group](https://datatracker.ietf.org/wg/dnssd/documents/) Internet-Draft, "DNS Multiple QTYPEs".
+This is the working area for the IETF [DNSSD Working Group](https://datatracker.ietf.org/group/dnssd/documents/) Internet-Draft, "DNS Multiple QTYPEs".
 
 * [Editor's Copy](https://dnssd-wg.github.io/draft-ietf-dnssd-multi-qtypes/#go.draft-ietf-dnssd-multi-qtypes.html)
 * [Editor's Copy as TXT](https://dnssd-wg.github.io/draft-ietf-dnssd-multi-qtypes/#go.draft-ietf-dnssd-multi-qtypes.txt)
@@ -12,7 +12,7 @@ This is the working area for the IETF [DNSSD Working Group](https://datatracker.
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes/blob/master/CONTRIBUTING.md).
 
 Contributions can be made by creating pull requests.
 The GitHub interface supports creating pull requests using the Edit (✏) button.
