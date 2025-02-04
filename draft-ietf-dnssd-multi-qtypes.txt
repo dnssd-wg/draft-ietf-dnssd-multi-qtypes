@@ -4,8 +4,8 @@
 
 DNSSD                                                          R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                        19 December 2024
-Expires: 22 June 2025
+Intended status: Standards Track                         4 February 2025
+Expires: 8 August 2025
 
 
                           DNS Multiple QTYPEs
@@ -50,11 +50,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 June 2025.
+   This Internet-Draft will expire on 8 August 2025.
 
 Copyright Notice
 
-   Copyright (c) 2024 IETF Trust and the persons identified as the
+   Copyright (c) 2025 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -164,7 +164,7 @@ Table of Contents
    QT: a (potentially empty) list of 2 byte fields (QTx) in network
    order (MSB first) each specifying a DNS RRTYPE.  The RRTYPEs MUST be
    for real resource records, and MUST NOT refer to Meta RRTYPEs such as
-   "OPT" and those from the reserved range 128 - 255, e.g.  "IXFR",
+   "OPT" and those from the reserved range 128 - 255, e.g. "IXFR",
    "TSIG", "*", etc.
 
 3.2.  Server Handling
@@ -181,7 +181,7 @@ Table of Contents
    MUST return a FORMERR response.
 
    If an MQTYPE-Query option is received in a query that contains no
-   primary question (i.e.  QDCOUNT=0) the server MUST return a FORMERR
+   primary question (i.e. QDCOUNT=0) the server MUST return a FORMERR
    response.
 
    If any duplicate QTx (or one duplicating the primary QTYPE field) is
@@ -198,7 +198,7 @@ Table of Contents
 
    The server MUST first start constructing a response for the primary
    (QNAME, QCLASS, QTYPE) tuple specified in the Question section per
-   the existing DNS sections.  The RCODE and all other flags (e.g.  AA,
+   the existing DNS sections.  The RCODE and all other flags (e.g. AA,
    AD, etc) MUST be determined at this time.
 
    If this initial response results in truncation (TC=1) then the
