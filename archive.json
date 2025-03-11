@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-09T01:18:08.272362+00:00",
+  "timestamp": "2025-03-11T01:38:15.512916+00:00",
   "repo": "dnssd-wg/draft-ietf-dnssd-multi-qtypes",
   "labels": [
     {
@@ -63,6 +63,22 @@
           "updatedAt": "2018-07-13T18:55:23Z"
         }
       ]
+    },
+    {
+      "number": 5,
+      "id": "I_kwDOA8v66c6tMcy3",
+      "title": "Answer section, or Additional section?",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes/issues/5",
+      "state": "OPEN",
+      "author": "mstojens",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I can see it going either way, seeing as how RFC 1035 says:\n\n> The answer section contains RRs that answer the question\n> [...]\n> the additional records section contains RRs which relate to the query, but are not strictly answers for the question.\n\nOn the one hand, one could argue this draft makes the multiple RR types part of the spirit of the one question and therefore everything should go into Answers (other than those that go into the Authority section). On the other hand, only one RR type is in the actual Question section, so then the other RR type answers ought to go into the Additional section.\n\nI was not able to find any definitive guidance in the current draft on which section should contain the records that were returned based on the RR types listed in the MQType-Query option. Can you please specify which is expected? I may or may not want to know this before the 122 hackathon starts ;)",
+      "createdAt": "2025-03-09T22:40:54Z",
+      "updatedAt": "2025-03-09T22:40:54Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
