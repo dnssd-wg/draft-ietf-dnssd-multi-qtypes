@@ -167,8 +167,16 @@ resulted in a SERVFAIL, or if the primary response has AA=0 but a QTx
 response has AA=1, such as might happen if the NS and DS records were
 both requested at the parent side of a zone cut.
 
-The server MUST attempt to combine the remaining individual RRs into their
-respective sections. The server MUST detect duplicate RRs and keep only a
+The server MUST attempt to combine the remaining individual RRs into each
+section by treating every RR type listed in the query's MQTYPE-Query option's
+list as a primary question. Because {{!RFC1035}} defines the Answer section
+for records that answer the question and the Additional section for related
+records that do not necessarily answer the question, all records being returned
+whose RR types are listed in the MQTYPE-Response option MUST be included in the
+Answer section unless the RR types are specifically defined to go into the
+Authority section. 
+
+The server MUST detect duplicate RRs and keep only a
 single copy of each RR in its respective section.  Duplicates can occur
 e.g. in the Answer section if a CNAME chain is involved, or in the Authority
 section if multiple QTYPEs don't exist, etc.  Note that RRs can be
