@@ -353,7 +353,7 @@ is omitted from the MQTYPE-Response field.
 
 ~~~~~~~~~~~
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 33333
-;; flags: qr rd ra aa
+;; flags: qr aa
 ;; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 1
 
 ;; OPT PSEUDOSECTION:
