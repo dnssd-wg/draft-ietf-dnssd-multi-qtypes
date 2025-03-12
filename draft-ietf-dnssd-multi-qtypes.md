@@ -167,12 +167,16 @@ resulted in a SERVFAIL, or if the primary response has AA=0 but a QTx
 response has AA=1, such as might happen if the NS and DS records were
 both requested at the parent side of a zone cut.
 
-The server MUST attempt to combine the remaining individual RRs into their
-respective sections. The server MUST detect duplicate RRs and keep only a
-single copy of each RR in its respective section.  Duplicates can occur
-e.g. in the Answer section if a CNAME chain is involved, or in the Authority
-section if multiple QTYPEs don't exist, etc.  Note that RRs can be
-legitimately duplicated in different sections, e.g. for the (SOA, TYPE12345)
+The server MUST attempt to combine the remaining individual RRs into the
+same sections in which they would have appeared in a standalone query,
+i.e.  as if each combination had been "the question" per section 4.1 of
+{{!RFC1035}}.
+
+The server MUST detect duplicate RRs and keep only a single copy of each
+RR in its respective section.  Duplicates can occur e.g.  in the Answer
+section if a CNAME chain is involved, or in the Authority section if
+multiple QTYPEs don't exist, etc.  Note that RRs can be legitimately
+duplicated in different sections, e.g. for the (SOA, TYPE12345)
 combination on apex where TYPE12345 is not present.
 
 If message size (or other) limits do not allow all of the data obtained
