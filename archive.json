@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-13T01:39:06.464035+00:00",
+  "timestamp": "2025-03-16T01:43:57.370819+00:00",
   "repo": "dnssd-wg/draft-ietf-dnssd-multi-qtypes",
   "labels": [
     {
@@ -122,6 +122,22 @@
           "updatedAt": "2025-03-12T15:09:53Z"
         }
       ]
+    },
+    {
+      "number": 8,
+      "id": "I_kwDOA8v66c6uKocn",
+      "title": "State that recursive resolver MUST fetch required data",
+      "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes/issues/8",
+      "state": "OPEN",
+      "author": "StuartCheshire",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Per discussion with Ray Bellis at IETF 122 Bangkok Hackathon, draft-ietf-dnssd-multi-qtypes should state that:\n\nA recursive resolver MUST treat a Multiple-QTYPE query as equivalent to a series of individual queries for those types, and then merge the results of those individual queries into a single combined Multiple-QTYPE response. In other words, for the primary QTYPE, and all subordinate QTYPEs in the EDNS(0) option, a recursive responder MUST generate definitive answers for every QTYPE, either from its cache, if valid positive or negative answers are available, or otherwise by querying an upstream DNS server for current answers.\n\nThis is in contrast to the behavior for QTYPE=ANY, where it is permissible to return incomplete results to the caller with no indication that some data is missing.",
+      "createdAt": "2025-03-15T11:33:51Z",
+      "updatedAt": "2025-03-15T11:33:51Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
