@@ -4,8 +4,8 @@
 
 DNSSD                                                          R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                           12 March 2025
-Expires: 13 September 2025
+Intended status: Standards Track                           21 March 2025
+Expires: 22 September 2025
 
 
                           DNS Multiple QTYPEs
@@ -15,7 +15,7 @@ Abstract
 
    This document specifies a method for a DNS client to request
    additional DNS record types to be delivered alongside the primary
-   record type specified in the question section of a DNS query
+   record type specified in the question section of a DNS QUERY
    (OpCode=0).
 
 About This Document
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 September 2025.
+   This Internet-Draft will expire on 22 September 2025.
 
 Copyright Notice
 
@@ -162,10 +162,8 @@ Table of Contents
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
    QT: a (potentially empty) list of 2 byte fields (QTx) in network
-   order (MSB first) each specifying a DNS RRTYPE.  The RRTYPEs MUST be
-   for real resource records, and MUST NOT refer to Meta RRTYPEs such as
-   "OPT" and those from the reserved range 128 - 255, e.g. "IXFR",
-   "TSIG", "*", etc.
+   order (MSB first) each specifying a DNS RRTYPE that must be for a
+   data RRTYPE as described in Section 3.1 of [RFC6895].
 
 3.2.  Server Handling
 
@@ -184,11 +182,15 @@ Table of Contents
    primary question (i.e. QDCOUNT=0) the server MUST return a FORMERR
    response.
 
-   If any duplicate QTx (or one duplicating the primary QTYPE field) is
-   contained in a query the server MUST return a FORMERR response.
+   If an MQTYPE-Query option is received in a query where the primary
+   question is a non-data RRTYPE (e.g. ANY, AXFR, etc.) the server MUST
+   return a FORMERR response.
 
    If any invalid QTx is received in the query (e.g. one corresponding
    to a Meta RRTYPE) the server MUST return a FORMERR response.
+
+   If any duplicate QTx (or one duplicating the primary QTYPE field) is
+   contained in a query the server MUST return a FORMERR response.
 
 3.2.2.  Response Generation
 
@@ -207,7 +209,9 @@ Table of Contents
 
    After the initial response is prepared, the server MUST attempt to
    combine the responses for individual (QNAME, QCLASS, QTx)
-   combinations into the response for the first query.
+   combinations into the response for the first query.  If a recursive
+   server does not yet have those responses available it MUST first make
+   appropriate outbound queries to populate its caches.
 
    For each individual combination the server MUST evaluate the
    resulting RCODE and other flags and check that they all match the
@@ -228,16 +232,18 @@ Table of Contents
    section 4.1 of [RFC1035].
 
    The server MUST detect duplicate RRs and keep only a single copy of
-   each RR in its respective section.  Duplicates can occur e.g.  in the
+   each RR in its respective section.  Duplicates can occur e.g. in the
    Answer section if a CNAME chain is involved, or in the Authority
    section if multiple QTYPEs don't exist, etc.  Note that RRs can be
    legitimately duplicated in different sections, e.g. for the (SOA,
    TYPE12345) combination on apex where TYPE12345 is not present.
 
-   If message size (or other) limits do not allow all of the data
-   obtained by querying for an additional QTx to be included in the
-   final response then the server MUST NOT include the respective QTx in
-   the MQTYPE-Response option's list and MAY stop processing further QTx
+   Handling of an MQTYE-Request option MUST NOT itself trigger a
+   truncated response.  If message size (or other) limits do not allow
+   all of the data obtained by querying for an additional QTx to be
+   included in the final response in their entireity (i.e. as complete
+   RRsets) then the server MUST NOT include the respective QTx in the
+   MQTYPE-Response option's list and MAY stop processing further QTx
    combinations.
 
    If all RRs for a single QTx combination fit into the message then the
@@ -343,6 +349,10 @@ Normative References
               DOI 10.17487/RFC6891, April 2013,
               <https://www.rfc-editor.org/rfc/rfc6891>.
 
+   [RFC6895]  Eastlake 3rd, D., "Domain Name System (DNS) IANA
+              Considerations", BCP 42, RFC 6895, DOI 10.17487/RFC6895,
+              April 2013, <https://www.rfc-editor.org/rfc/rfc6895>.
+
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
@@ -446,7 +456,7 @@ A.3.  Recursive query for DS with MQType-Request for NS
    and the NS QTYPE is omitted from the MQTYPE-Response field.
 
    ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 33333
-   ;; flags: qr rd ra aa
+   ;; flags: qr aa
    ;; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 1
 
    ;; OPT PSEUDOSECTION:
