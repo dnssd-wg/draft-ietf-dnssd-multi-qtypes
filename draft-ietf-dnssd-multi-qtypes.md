@@ -42,7 +42,7 @@ specified in the question section of a DNS QUERY (OpCode=0).
 
 # Introduction
 
-A commonly requested DNS {{!STD13}} feature is the ability to receive
+A commonly requested DNS {{!RFC1035}} feature is the ability to receive
 multiple related resource records (RRs) in a single DNS response.
 
 For example, it may be desirable to receive the A, AAAA and HTTPS
@@ -177,7 +177,7 @@ i.e.  as if each combination had been "the question" per section 4.1 of
 {{!RFC1035}}.
 
 The server MUST detect duplicate RRs and keep only a single copy of each
-RR in its respective section.  Duplicates can occur e.g.  in the Answer
+RR in its respective section.  Duplicates can occur e.g. in the Answer
 section if a CNAME chain is involved, or in the Authority section if
 multiple QTYPEs don't exist, etc.  Note that RRs can be legitimately
 duplicated in different sections, e.g. for the (SOA, TYPE12345)
