@@ -36,13 +36,13 @@ author:
 
 This document specifies a method for a DNS client to request additional
 DNS record types to be delivered alongside the primary record type
-specified in the question section of a DNS query (OpCode=0).
+specified in the question section of a DNS QUERY (OpCode=0).
 
 --- middle
 
 # Introduction
 
-A commonly requested DNS {{!RFC1035}} feature is the ability to receive
+A commonly requested DNS {{!STD13}} feature is the ability to receive
 multiple related resource records (RRs) in a single DNS response.
 
 For example, it may be desirable to receive the A, AAAA and HTTPS
@@ -109,10 +109,8 @@ OPTION-DATA: Option specific, as below:
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
 QT: a (potentially empty) list of 2 byte fields (QTx) in network order
-(MSB first) each specifying a DNS RRTYPE.  The RRTYPEs MUST be for
-real resource records, and MUST NOT refer to Meta RRTYPEs such as
-"OPT" and those from the reserved range 128 - 255, e.g. "IXFR", "TSIG",
-"*", etc.
+(MSB first) each specifying a DNS RRTYPE that must be for a data RRTYPE
+as described in Section 3.1 of {{!RFC6895}}.
 
 ## Server Handling
 
@@ -130,11 +128,15 @@ return a FORMERR response.
 If an MQTYPE-Query option is received in a query that contains no primary
 question (i.e. QDCOUNT=0) the server MUST return a FORMERR response.
 
-If any duplicate QTx (or one duplicating the primary QTYPE field) is
-contained in a query the server MUST return a FORMERR response.
+If an MQTYPE-Query option is received in a query where the primary question
+is a non-data RRTYPE (e.g. ANY, AXFR, etc.) the server MUST return a FORMERR
+response.
 
 If any invalid QTx is received in the query (e.g. one corresponding to a
 Meta RRTYPE) the server MUST return a FORMERR response.
+
+If any duplicate QTx (or one duplicating the primary QTYPE field) is
+contained in a query the server MUST return a FORMERR response.
 
 ### Response Generation
 
@@ -153,7 +155,9 @@ processed.
 
 After the initial response is prepared, the server MUST attempt to
 combine the responses for individual (QNAME, QCLASS, QTx) combinations
-into the response for the first query.
+into the response for the first query.  If a recursive server does
+not yet have those responses available it MUST first make appropriate
+outbound queries to populate its caches.
 
 For each individual combination the server MUST evaluate the resulting
 RCODE and other flags and check that they all match the values generated
@@ -179,11 +183,12 @@ multiple QTYPEs don't exist, etc.  Note that RRs can be legitimately
 duplicated in different sections, e.g. for the (SOA, TYPE12345)
 combination on apex where TYPE12345 is not present.
 
-If message size (or other) limits do not allow all of the data obtained
-by querying for an additional QTx to be included in the final response
-then the server MUST NOT include the respective QTx in the
-MQTYPE-Response option's list and MAY stop processing further QTx
-combinations.
+Handling of an MQTYE-Request option MUST NOT itself trigger a truncated
+response.  If message size (or other) limits do not allow all of the
+data obtained by querying for an additional QTx to be included in the
+final response in their entireity (i.e. as complete RRsets) then the
+server MUST NOT include the respective QTx in the MQTYPE-Response
+option's list and MAY stop processing further QTx combinations.
 
 If all RRs for a single QTx combination fit into the message then the
 server MUST include the respective QTx in the MQTYPE-Response option's list
@@ -353,7 +358,7 @@ is omitted from the MQTYPE-Response field.
 
 ~~~~~~~~~~~
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 33333
-;; flags: qr rd ra aa
+;; flags: qr aa
 ;; QUERY: 1, ANSWER: 5, AUTHORITY: 0, ADDITIONAL: 1
 
 ;; OPT PSEUDOSECTION:
