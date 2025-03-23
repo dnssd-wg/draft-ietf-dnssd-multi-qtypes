@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-03-20T01:38:18.093288+00:00",
+  "timestamp": "2025-03-23T01:44:50.468615+00:00",
   "repo": "dnssd-wg/draft-ietf-dnssd-multi-qtypes",
   "labels": [
     {
@@ -128,16 +128,24 @@
       "id": "I_kwDOA8v66c6uKocn",
       "title": "State that recursive resolver MUST fetch required data",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes/issues/8",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "StuartCheshire",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Per discussion with Ray Bellis at IETF 122 Bangkok Hackathon, draft-ietf-dnssd-multi-qtypes should state that:\n\nA recursive resolver MUST treat a Multiple-QTYPE query as equivalent to a series of individual queries for those types, and then merge the results of those individual queries into a single combined Multiple-QTYPE response. In other words, for the primary QTYPE, and all subordinate QTYPEs in the EDNS(0) option, a recursive responder MUST generate definitive answers for every QTYPE, either from its cache, if valid positive or negative answers are available, or otherwise by querying an upstream DNS server for current answers.\n\nThis is in contrast to the behavior for QTYPE=ANY, where it is permissible to return incomplete results to the caller with no indication that some data is missing.",
       "createdAt": "2025-03-15T11:33:51Z",
-      "updatedAt": "2025-03-15T11:33:51Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-03-21T05:14:15Z",
+      "closedAt": "2025-03-21T05:14:14Z",
+      "comments": [
+        {
+          "author": "raybellis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "resolved in 411e72a42beb0a4a43cfc05957f5c6d0b33dda3f",
+          "createdAt": "2025-03-21T05:14:14Z",
+          "updatedAt": "2025-03-21T05:14:14Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -319,25 +327,33 @@
       "id": "PR_kwDOA8v66c6OWn6-",
       "title": "Unset rd and ra bits in example response from authoritative server",
       "url": "https://github.com/dnssd-wg/draft-ietf-dnssd-multi-qtypes/pull/7",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "matsduf",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "It would be reasonable if the recursive resolver does not have the rd bit set and if the authoritative server does not have the ra bit set.",
       "createdAt": "2025-03-12T14:12:20Z",
-      "updatedAt": "2025-03-12T14:12:20Z",
+      "updatedAt": "2025-03-21T05:13:51Z",
       "baseRepository": "dnssd-wg/draft-ietf-dnssd-multi-qtypes",
       "baseRefName": "master",
       "baseRefOid": "7f0f1d08cc6dff32a71975fa02d93824dc1f0fb5",
       "headRepository": "matsduf/draft-ietf-dnssd-multi-qtypes",
       "headRefName": "patch-1",
       "headRefOid": "d6a8f8638e1bf17eb4e0e634b8e94ec0961e7107",
-      "closedAt": null,
+      "closedAt": "2025-03-21T05:13:51Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "raybellis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "resolved in 411e72a42beb0a4a43cfc05957f5c6d0b33dda3f",
+          "createdAt": "2025-03-21T05:13:51Z",
+          "updatedAt": "2025-03-21T05:13:51Z"
+        }
+      ],
       "reviews": []
     }
   ]
