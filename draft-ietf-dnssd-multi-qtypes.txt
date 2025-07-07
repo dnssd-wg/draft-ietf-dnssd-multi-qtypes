@@ -4,8 +4,8 @@
 
 DNSSD                                                          R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                           21 March 2025
-Expires: 22 September 2025
+Intended status: Standards Track                             7 July 2025
+Expires: 8 January 2026
 
 
                           DNS Multiple QTYPEs
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 September 2025.
+   This Internet-Draft will expire on 8 January 2026.
 
 Copyright Notice
 
@@ -145,8 +145,8 @@ Table of Contents
       /                                                               /
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
-   OPTION-CODE: MQTYPE-Query (TBD1) in queries and MQTYPE-Response
-   (TBD2) in responses.
+   OPTION-CODE: MQTYPE-Query (20) in queries and MQTYPE-Response (21) in
+   responses.
 
    OPTION-LENGTH: Size (in octets) of OPTION-DATA.
 
@@ -307,14 +307,14 @@ Table of Contents
    potential amplification factor when the DNS protocol is used as a
    vector for a denial of service attack.
 
+   Implementors SHOULD allow operators to configure limits on the number
+   of QTx values specified and/or the resulting response size.
+
 5.  IANA Considerations
 
-   NB: to be rewritten once assignments have been made.
-
-   IANA is requested to assign two new values (TBD1 and TBD2) in the DNS
-   EDNS0 Option Codes registry for MQTYPE-Query and MQTYPE-Response.
-   They should be consecutive, with the -Query option being an even
-   number.
+   IANA has assigned the values of 20 and 21 in the DNS EDNS0 Option
+   Codes registry for MQTYPE-Query and MQTYPE-Response options
+   respectively.
 
 Acknowledgements
 
