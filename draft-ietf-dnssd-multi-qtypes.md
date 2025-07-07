@@ -93,7 +93,7 @@ per {{!RFC6891}}, followed by the option specific data:
        /                                                               /
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
-OPTION-CODE: MQTYPE-Query (TBD1) in queries and MQTYPE-Response (TBD2) in responses.
+OPTION-CODE: MQTYPE-Query (20) in queries and MQTYPE-Response (21) in responses.
 
 OPTION-LENGTH: Size (in octets) of OPTION-DATA.
 
@@ -252,11 +252,8 @@ denial of service attack.
 
 # IANA Considerations
 
-NB: to be rewritten once assignments have been made.
-
-IANA is requested to assign two new values (TBD1 and TBD2) in the DNS
-EDNS0 Option Codes registry for MQTYPE-Query and MQTYPE-Response.  They
-should be consecutive, with the -Query option being an even number.
+IANA has assigned the values of 20 and 21 in the DNS EDNS0 Option Codes
+registry for MQTYPE-Query and MQTYPE-Response options respectively.
 
 # Acknowledgements
 {:numbered="false"}
