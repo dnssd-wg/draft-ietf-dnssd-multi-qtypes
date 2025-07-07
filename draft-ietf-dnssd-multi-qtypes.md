@@ -250,6 +250,9 @@ It should however be noted that this method does increase the potential
 amplification factor when the DNS protocol is used as a vector for a
 denial of service attack.
 
+Implementors SHOULD allow operators to configure limits on the number of
+QTx values specified and/or the resulting response size.
+
 # IANA Considerations
 
 IANA has assigned the values of 20 and 21 in the DNS EDNS0 Option Codes
