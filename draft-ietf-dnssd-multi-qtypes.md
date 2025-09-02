@@ -255,8 +255,12 @@ QTx values specified and/or the resulting response size.
 
 # IANA Considerations
 
-IANA has assigned the values of 20 and 21 in the DNS EDNS0 Option Codes
-registry for MQTYPE-Query and MQTYPE-Response options respectively.
+IANA has assigned the following in the "DNS EDNS0 Option Codes (OPT)" registry:
+
+| Value	| Name            | Status   | Reference |
+|-------+-----------------+----------+-----------|
+|  20   | MQTYPE-Query    | Optional | RFC TBD   |
+|  21   | MQTYPE-Response | Optional | RFC TBD   |
 
 # Acknowledgements
 {:numbered="false"}
