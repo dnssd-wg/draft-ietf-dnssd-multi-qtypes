@@ -4,8 +4,8 @@
 
 DNSSD                                                          R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                             7 July 2025
-Expires: 8 January 2026
+Intended status: Standards Track                        2 September 2025
+Expires: 6 March 2026
 
 
                           DNS Multiple QTYPEs
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2026.
+   This Internet-Draft will expire on 6 March 2026.
 
 Copyright Notice
 
@@ -312,9 +312,18 @@ Table of Contents
 
 5.  IANA Considerations
 
-   IANA has assigned the values of 20 and 21 in the DNS EDNS0 Option
-   Codes registry for MQTYPE-Query and MQTYPE-Response options
-   respectively.
+   IANA has assigned the following in the "DNS EDNS0 Option Codes (OPT)"
+   registry:
+
+            +=======+=================+==========+===========+
+            | Value | Name            | Status   | Reference |
+            +=======+=================+==========+===========+
+            | 20    | MQTYPE-Query    | Optional | RFC TBD   |
+            +-------+-----------------+----------+-----------+
+            | 21    | MQTYPE-Response | Optional | RFC TBD   |
+            +-------+-----------------+----------+-----------+
+
+                                 Table 1
 
 Acknowledgements
 
