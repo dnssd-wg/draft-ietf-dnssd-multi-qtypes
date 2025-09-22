@@ -4,8 +4,8 @@
 
 DNSSD                                                          R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                             7 July 2025
-Expires: 8 January 2026
+Intended status: Standards Track                       22 September 2025
+Expires: 26 March 2026
 
 
                           DNS Multiple QTYPEs
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2026.
+   This Internet-Draft will expire on 26 March 2026.
 
 Copyright Notice
 
@@ -83,9 +83,9 @@ Table of Contents
      Normative References
      Informative References
    Appendix A.   Examples
-     A.1.  Stub query for A with MQType-Request for AAAA + HTTPS
-     A.2.  Stub query for DS with MQType-Request for DNSKEY
-     A.3.  Recursive query for DS with MQType-Request for NS
+     A.1.  Stub query for A with MQType-Query for AAAA + HTTPS
+     A.2.  Stub query for DS with MQType-Query for DNSKEY
+     A.3.  Recursive query for DS with MQType-Query for NS
    Author's Address
 
 1.  Introduction
@@ -152,7 +152,7 @@ Table of Contents
 
    OPTION-DATA: Option specific, as below:
 
-                   +0 (MSB)                            +1 (LSB)
+                   +0 (MSB)                        +1 (LSB)
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
    0: |           QT1 (MSB)           |           QT1 (LSB)           |
       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
@@ -238,13 +238,12 @@ Table of Contents
    legitimately duplicated in different sections, e.g. for the (SOA,
    TYPE12345) combination on apex where TYPE12345 is not present.
 
-   Handling of an MQTYE-Request option MUST NOT itself trigger a
-   truncated response.  If message size (or other) limits do not allow
-   all of the data obtained by querying for an additional QTx to be
-   included in the final response in their entireity (i.e. as complete
-   RRsets) then the server MUST NOT include the respective QTx in the
-   MQTYPE-Response option's list and MAY stop processing further QTx
-   combinations.
+   Handling of an MQTYE-Query option MUST NOT itself trigger a truncated
+   response.  If message size (or other) limits do not allow all of the
+   data obtained by querying for an additional QTx to be included in the
+   final response in their entirety (i.e. as complete RRsets) then the
+   server MUST NOT include the respective QTx in the MQTYPE-Response
+   option's list and MAY stop processing further QTx combinations.
 
    If all RRs for a single QTx combination fit into the message then the
    server MUST include the respective QTx in the MQTYPE-Response
@@ -312,9 +311,18 @@ Table of Contents
 
 5.  IANA Considerations
 
-   IANA has assigned the values of 20 and 21 in the DNS EDNS0 Option
-   Codes registry for MQTYPE-Query and MQTYPE-Response options
-   respectively.
+   IANA has assigned the following in the "DNS EDNS0 Option Codes (OPT)"
+   registry:
+
+            +=======+=================+==========+===========+
+            | Value | Name            | Status   | Reference |
+            +=======+=================+==========+===========+
+            | 20    | MQTYPE-Query    | Optional | RFC TBD   |
+            +-------+-----------------+----------+-----------+
+            | 21    | MQTYPE-Response | Optional | RFC TBD   |
+            +-------+-----------------+----------+-----------+
+
+                                 Table 1
 
 Acknowledgements
 
@@ -377,10 +385,10 @@ Appendix A.   Examples
    The examples below are shown as might be reported by the ISC Dig
    utility.  For the purposes of brevity irrelevant content is omitted.
 
-A.1.  Stub query for A with MQType-Request for AAAA + HTTPS
+A.1.  Stub query for A with MQType-Query for AAAA + HTTPS
 
    In this example a stub resolver has requested the A record for
-   www.example.com, along with an MQTYPE-Request option requesting AAAA
+   www.example.com, along with an MQTYPE-Query option requesting AAAA
    and HTTPS records.  The stub resolver has also set the DO bit,
    indicating DNSSEC support.
 
@@ -416,10 +424,10 @@ A.1.  Stub query for A with MQType-Request for AAAA + HTTPS
 
                          Figure 1: A + AAAA + HTTPS
 
-A.2.  Stub query for DS with MQType-Request for DNSKEY
+A.2.  Stub query for DS with MQType-Query for DNSKEY
 
    In this similar example, the primary QTYPE is for DS and the MQTYPE-
-   Request field only contains DNSKEY.
+   Query field only contains DNSKEY.
 
    Both the DS and DNSKEY records are returned, along with their
    corresponding RRSIG records.
@@ -444,7 +452,7 @@ A.2.  Stub query for DS with MQType-Request for DNSKEY
 
                          Figure 2: Stub DS + DNSKEY
 
-A.3.  Recursive query for DS with MQType-Request for NS
+A.3.  Recursive query for DS with MQType-Query for NS
 
    In this instance, a recursive resolver is sending a DS record query
    to the parent zone's authoritative server and simultaneously
