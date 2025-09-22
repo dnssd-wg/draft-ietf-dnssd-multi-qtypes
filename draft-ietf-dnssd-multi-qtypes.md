@@ -1,4 +1,4 @@
----
+--
 title: DNS Multiple QTYPEs
 docname: draft-ietf-dnssd-multi-qtypes-latest
 submissiontype: IETF
@@ -99,7 +99,7 @@ OPTION-LENGTH: Size (in octets) of OPTION-DATA.
 
 OPTION-DATA: Option specific, as below:
 
-                    +0 (MSB)                            +1 (LSB)
+                    +0 (MSB)                        +1 (LSB)
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
     0: |           QT1 (MSB)           |           QT1 (LSB)           |
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
@@ -183,10 +183,10 @@ multiple QTYPEs don't exist, etc.  Note that RRs can be legitimately
 duplicated in different sections, e.g. for the (SOA, TYPE12345)
 combination on apex where TYPE12345 is not present.
 
-Handling of an MQTYE-Request option MUST NOT itself trigger a truncated
+Handling of an MQTYE-Query option MUST NOT itself trigger a truncated
 response.  If message size (or other) limits do not allow all of the
 data obtained by querying for an additional QTx to be included in the
-final response in their entireity (i.e. as complete RRsets) then the
+final response in their entirety (i.e. as complete RRsets) then the
 server MUST NOT include the respective QTx in the MQTYPE-Response
 option's list and MAY stop processing further QTx combinations.
 
@@ -280,10 +280,10 @@ Cheshire, Esko Dijk, Ted Lemon, David Schinazi and Petr Spacek.
 The examples below are shown as might be reported by the ISC Dig utility.
 For the purposes of brevity irrelevant content is omitted.
 
-## Stub query for A with MQType-Request for AAAA + HTTPS
+## Stub query for A with MQType-Query for AAAA + HTTPS
 
 In this example a stub resolver has requested the A record for
-www.example.com, along with an MQTYPE-Request option requesting AAAA and
+www.example.com, along with an MQTYPE-Query option requesting AAAA and
 HTTPS records.  The stub resolver has also set the DO bit, indicating
 DNSSEC support.
 
@@ -320,9 +320,9 @@ example.com.        2830  IN  RRSIG   SOA 13 2 [...]
 ~~~~~~~~~~~
 {: #figaaaahttps title="A + AAAA + HTTPS" }
 
-## Stub query for DS with MQType-Request for DNSKEY
+## Stub query for DS with MQType-Query for DNSKEY
 
-In this similar example, the primary QTYPE is for DS and the MQTYPE-Request
+In this similar example, the primary QTYPE is for DS and the MQTYPE-Query
 field only contains DNSKEY.
 
 Both the DS and DNSKEY records are returned, along with their corresponding
@@ -349,7 +349,7 @@ example.com.      86185   IN  RRSIG   DS [...] com. [...]
 ~~~~~~~~~~~
 {: #figdsdnskey title="Stub DS + DNSKEY" }
 
-## Recursive query for DS with MQType-Request for NS
+## Recursive query for DS with MQType-Query for NS
 
 In this instance, a recursive resolver is sending a DS record query to the
 parent zone's authoritative server and simultaneously requesting the NS
