@@ -42,7 +42,7 @@ specified in the question section of a DNS QUERY (OpCode=0).
 
 # Introduction
 
-A commonly requested DNS {{!RFC1035}} feature is the ability to receive
+A commonly requested DNS {{!STD13}} feature is the ability to receive
 multiple related resource records (RRs) in a single DNS response.
 
 For example, it may be desirable to receive the A, AAAA and HTTPS
@@ -50,8 +50,8 @@ records for a domain name together, rather than having to issue
 multiple queries.
 
 The DNS wire protocol in theory supported having multiple questions in a
-single packet, but in practise this does not work.  In {{!RFC9619}},
-{{!RFC1035}} is updated to only permit a single question in a QUERY
+single packet, but in practice this does not work.  In {{!RFC9619}},
+{{RFC1035}} is updated to only permit a single question in a QUERY
 (OpCode=0) request.
 
 Sending QTYPE=ANY does not guarantee that all RRsets will be returned.
@@ -61,10 +61,10 @@ their choosing.
 This document provides a solution for those cases where only the QTYPE
 varies by specifying a new option for the Extension Mechanisms for DNS
 (EDNS {{!RFC6891}}) that contains an additional list of QTYPE values
-that the client wishes to receive in addition to the single QTYPE
-appearing in the question section.  A different EDNS option is used in
-response packets as protection against DNS middleboxes that echo EDNS
-options verbatim.
+that the client wishes to receive in addition to the single
+QTYPE appearing in the question section.  A different EDNS option is
+used in response packets as protection against DNS middleboxes that echo
+EDNS options verbatim.
 
 The specification described herein is applicable both for queries from a
 stub resolver to recursive servers, and from recursive resolvers to
@@ -76,22 +76,24 @@ records in a single query.
 
 {::boilerplate bcp14-tagged}
 
-# Description
+# Specification
 
 ## Multiple QTYPE EDNS Options Format
 
 The overall format of an EDNS option is shown for reference below,
 per {{!RFC6891}}, followed by the option specific data:
 
+~~~ aasvg
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
     0: |                          OPTION-CODE                          |
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
     2: |                         OPTION-LENGTH                         |
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-    4: |                                                               |
+    4: /                                                               /
        /                          OPTION-DATA                          /
        /                                                               /
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+~~~
 
 OPTION-CODE: MQTYPE-Query (20) in queries and MQTYPE-Response (21) in responses.
 
@@ -99,18 +101,19 @@ OPTION-LENGTH: Size (in octets) of OPTION-DATA.
 
 OPTION-DATA: Option specific, as below:
 
-                    +0 (MSB)                        +1 (LSB)
+~~~ aasvg
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-    0: |           QT1 (MSB)           |           QT1 (LSB)           |
+    0: |                              QT1                              |
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-    2: /              ...              |              ...              /
+    2: /                              ...                              /
+       +---+---+---+---+---+---+---+-------+---+---+---+---+---+---+---+
+       /                              QTn                              |
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-       /           QTn (MSB)           |           QTn (LSB)           |
-       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+~~~
 
-QT: a (potentially empty) list of 2 byte fields (QTx) in network order
-(MSB first) each specifying a DNS RRTYPE that must be for a data RRTYPE
-as described in Section 3.1 of {{!RFC6895}}.
+A (potentially empty) list of 2-octet fields in network order (MSB
+first) each specifying a DNS RRTYPE that must be for a data RRTYPE as
+described in Section 3.1 of {{!RFC6895}}.
 
 ## Server Handling
 
@@ -174,7 +177,7 @@ both requested at the parent side of a zone cut.
 The server MUST attempt to combine the remaining individual RRs into the
 same sections in which they would have appeared in a standalone query,
 i.e.  as if each combination had been "the question" per section 4.1 of
-{{!RFC1035}}.
+{{RFC1035}}.
 
 The server MUST detect duplicate RRs and keep only a single copy of each
 RR in its respective section.  Duplicates can occur e.g. in the Answer
@@ -183,7 +186,7 @@ multiple QTYPEs don't exist, etc.  Note that RRs can be legitimately
 duplicated in different sections, e.g. for the (SOA, TYPE12345)
 combination on apex where TYPE12345 is not present.
 
-Handling of an MQTYE-Query option MUST NOT itself trigger a truncated
+Handling of an MQTYPE-Query option MUST NOT itself trigger a truncated
 response.  If message size (or other) limits do not allow all of the
 data obtained by querying for an additional QTx to be included in the
 final response in their entirety (i.e. as complete RRsets) then the
@@ -255,12 +258,17 @@ QTx values specified and/or the resulting response size.
 
 # IANA Considerations
 
-IANA has assigned the following in the "DNS EDNS0 Option Codes (OPT)" registry:
+IANA has assigned the following in the "DNS EDNS0 Option Codes (OPT)"
+registry:
 
-| Value	| Name            | Status   | Reference |
-|-------+-----------------+----------+-----------|
+~~~ aasvg
++-------+-----------------+----------+-----------+
+| Value | Name            | Status   | Reference |
++-------+-----------------+----------+-----------+
 |  20   | MQTYPE-Query    | Optional | RFC TBD   |
 |  21   | MQTYPE-Response | Optional | RFC TBD   |
++-------+-----------------+----------+-----------+
+~~~
 
 # Acknowledgements
 {:numbered="false"}
