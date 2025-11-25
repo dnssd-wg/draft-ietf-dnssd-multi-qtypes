@@ -4,8 +4,8 @@
 
 DNSSD                                                          R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                        24 November 2025
-Expires: 28 May 2026
+Intended status: Standards Track                        25 November 2025
+Expires: 29 May 2026
 
 
                           DNS Multiple QTYPEs
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 May 2026.
+   This Internet-Draft will expire on 29 May 2026.
 
 Copyright Notice
 
@@ -140,9 +140,9 @@ Table of Contents
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
     2: |                         OPTION-LENGTH                         |
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-    4: /                                                               /
-       /                          OPTION-DATA                          /
-       /                                                               /
+    4: |                                                               |
+       :                          OPTION-DATA                          :
+       |                                                               |
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
    OPTION-CODE: MQTYPE-Query (20) in queries and MQTYPE-Response (21) in
@@ -155,9 +155,11 @@ Table of Contents
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
     0: |                              QT1                              |
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-    2: /                              ...                              /
-       +---+---+---+---+---+---+---+-------+---+---+---+---+---+---+---+
-       /                              QTn                              |
+    2: |                                                               |
+       :                              ...                              :
+       |                                                               |
+       +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+       |                              QTn                              |
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
    A (potentially empty) list of 2-octet fields in network order (MSB
@@ -314,12 +316,15 @@ Table of Contents
    IANA has assigned the following in the "DNS EDNS0 Option Codes (OPT)"
    registry:
 
-   +-------+-----------------+----------+-----------+
-   | Value | Name            | Status   | Reference |
-   +-------+-----------------+----------+-----------+
-   |  20   | MQTYPE-Query    | Optional | RFC TBD   |
-   |  21   | MQTYPE-Response | Optional | RFC TBD   |
-   +-------+-----------------+----------+-----------+
+            +=======+=================+==========+===========+
+            | Value | Name            | Status   | Reference |
+            +=======+=================+==========+===========+
+            | 20    | MQTYPE-Query    | Optional | RFC TBD   |
+            +-------+-----------------+----------+-----------+
+            | 21    | MQTYPE-Response | Optional | RFC TBD   |
+            +-------+-----------------+----------+-----------+
+
+                       Table 1: EDNS Option Numbers
 
 Acknowledgements
 
