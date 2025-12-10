@@ -113,16 +113,23 @@ OPTION-DATA: Option specific, as below:
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 ~~~
 
-A (potentially empty) list of 2-octet fields in network order (MSB
-first) each specifying a DNS RRTYPE that must be for a data RRTYPE as
-described in Section 3.1 of {{!RFC6895}}.
+A list of 2-octet fields in network order (MSB first) each specifying a
+DNS RRTYPE that must be for a data RRTYPE as described in Section 3.1 of
+{{!RFC6895}}.
 
-## Server Handling
+## Client Request Processing
 
-### Request Parsing
+DNS clients implementing this specification MUST generate packets that
+conform to the server request parsing rules described immediately below.
 
-If MQTYPE-Query is received in any inbound DNS message with an OpCode
-other than QUERY (0) the server MUST return a FORMERR response.
+The choice of when a client implementation should attempt to coalesce
+queries for multiple QTYPEs using this method is implementation specific
+and not discussed further herein.
+
+## Server Request Parsing
+
+If an MQTYPE-Query option is received in any inbound DNS message with an
+OpCode other than QUERY (0) the server MUST return a FORMERR response.
 
 A server that receives an MQTYPE-Response option in any inbound DNS
 message MUST return a FORMERR response.
@@ -137,17 +144,21 @@ If an MQTYPE-Query option is received in a query where the primary question
 is a non-data RRTYPE (e.g. ANY, AXFR, etc.) the server MUST return a FORMERR
 response.
 
+If the QT list in an MQTYPE-Query option is empty the server MUST return
+a FORMERR response.
+
 If any invalid QTx is received in the query (e.g. one corresponding to a
 Meta RRTYPE) the server MUST return a FORMERR response.
 
 If any duplicate QTx (or one duplicating the primary QTYPE field) is
 contained in a query the server MUST return a FORMERR response.
 
-### Response Generation
+## Server Response Generation
 
 A conforming server that receives an MQTYPE-Query option in a query MUST
 return an MQTYPE-Response option in its response, even if that response
-is truncated (TC=1).
+is truncated (TC=1).  This is necessary to indicate that the server does
+support this extension.
 
 The server MUST first start constructing a response for the primary
 (QNAME, QCLASS, QTYPE) tuple specified in the Question section per
@@ -170,11 +181,11 @@ from the primary query.
 
 If any mismatch is detected the mismatching additional response MUST NOT
 be included in the final combined response and its QTx value MUST NOT be
-included in the MQTYPE-Response option's list.  This might happen, for example,
-if the primary query resulted in a NOERROR response but a QTx query
-resulted in a SERVFAIL, or if the primary response has AA=0 but a QTx
-response has AA=1, such as might happen if the NS and DS records were
-both requested at the parent side of a zone cut.
+included in the MQTYPE-Response option's list.  This might happen, for
+example, if the primary query resulted in a NOERROR response but a QTx
+query resulted in a SERVFAIL, or if the primary response has AA=0 but a
+QTx response has AA=1, such as might happen if the NS and DS records
+were both requested at the parent side of a zone cut.
 
 The server MUST attempt to combine the remaining individual RRs into the
 same sections in which they would have appeared in a standalone query,
@@ -196,25 +207,30 @@ server MUST NOT include the respective QTx in the MQTYPE-Response
 option's list and MAY stop processing further QTx combinations.
 
 If all RRs for a single QTx combination fit into the message then the
-server MUST include the respective QTx in the MQTYPE-Response option's list
-to indicate that the given query type was completely processed.
+server MUST then include the respective QTx in the MQTYPE-Response
+option's list to indicate that the given query type was completely
+processed.
+
+Note that it is possible for the resulting MQTYPE-Response option to
+contain an empty list, but as described above the option MUST still be
+returned.
 
 ## Client Response Processing
-
-Recursive resolvers MAY use this method to obtain multiple records from
-an authoritative server.  For the purposes of Section 5.4.1 of
-{{!RFC2181}} any authoritative answers received MUST be ranked the same
-as the answer for the primary question.
 
 If the response to a query containing an MQTYPE-Query option does not
 contain an MQTYPE-Response option, or if it erroneously contains an
 MQTYPE-Query option, the client MUST treat the response as if this
-option is unsupported by the server and SHOULD process the response as
-if the MQTYPE-Query option had not been used.
+option is unsupported by the server and MUST process the primary
+response as if the MQTYPE-Query option had not been used.
+
+In the above case, or if the server generates a FORMERR response, the
+client MUST issue additional standalone queries (e.g. without using the
+MQTYPE-Query option) for all QTYPEs for which an answer is still
+required.
 
 If the MQTYPE-Response option is present more than once or if a QTx
 value is duplicated (or duplicates the primary QTYPE field) the client
-MUST treat the answer as invalid (equivalent to FORMERR)
+MUST treat the answer as invalid (equivalent to FORMERR).
 
 The Question section and the list of types present in the
 MQTYPE-Response option indicates the list of (QNAME, QCLASS, qtypes)
@@ -227,12 +243,16 @@ present in the respective sections of the DNS message, including proofs
 of nonexistence where required. The client MUST NOT rely on any
 particular order of RRs in the message sections.
 
+For the purposes of Section 5.4.1 of {{!RFC2181}} any authoritative
+answers received MUST be ranked the same as the answer for the primary
+question.
+
 Clients MUST take into account that individual RRs might originate from
 different DNS zones and that proofs of non-existence might have been
 produced by different signers.
 
 Absence of QTx values which were requested by client but are not present
-in MQTYPE-Response option indicates that:
+in the MQTYPE-Response option indicates that:
 
 - the server was unwilling to process the request (e.g. because a limit
 was exceeded), and/or
@@ -242,9 +262,8 @@ because of RCODE or other flag mismatches, and/or
 
 - the message size limit would be exceeded
 
-The client SHOULD subsequently initiate standalone queries (e.g. without
-using the MQTYPE-Query option) for any QTx value which was requested but
-is missing in the response.
+The client MUST subsequently initiate separate standalone queries for
+all QTx values for which an answer is still required.
 
 # Security Considerations
 
