@@ -4,8 +4,8 @@
 
 DNSSD                                                          R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                        25 November 2025
-Expires: 29 May 2026
+Intended status: Standards Track                         30 January 2026
+Expires: 3 August 2026
 
 
                           DNS Multiple QTYPEs
@@ -50,11 +50,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 May 2026.
+   This Internet-Draft will expire on 3 August 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -72,10 +72,10 @@ Table of Contents
    2.  Terminology used in this document
    3.  Specification
      3.1.  Multiple QTYPE EDNS Options Format
-     3.2.  Server Handling
-       3.2.1.  Request Parsing
-       3.2.2.  Response Generation
-     3.3.  Client Response Processing
+     3.2.  Client Request Generation
+     3.3.  Server Request Parsing
+     3.4.  Server Response Generation
+     3.5.  Client Response Processing
    4.  Security Considerations
    5.  IANA Considerations
    Acknowledgements
@@ -118,7 +118,8 @@ Table of Contents
    from a stub resolver to recursive servers, and from recursive
    resolvers to authoritative servers.  It does not apply to Multicast
    DNS queries [RFC6762], which are already designed to allow requesting
-   multiple records in a single query.
+   multiple records in a single query, but is applicable to DNS-Based
+   Service Discovery (DNS-SD) [RFC6763].
 
 2.  Terminology used in this document
 
@@ -162,16 +163,25 @@ Table of Contents
        |                              QTn                              |
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
-   A (potentially empty) list of 2-octet fields in network order (MSB
-   first) each specifying a DNS RRTYPE that must be for a data RRTYPE as
-   described in Section 3.1 of [RFC6895].
+   A list of 2-octet fields in network order (MSB first) each specifying
+   a DNS RRTYPE that must be for a data RRTYPE as described in
+   Section 3.1 of [RFC6895].
 
-3.2.  Server Handling
+3.2.  Client Request Generation
 
-3.2.1.  Request Parsing
+   DNS clients implementing this specification MUST generate packets
+   that conform to the server request parsing rules described
+   immediately below.
 
-   If MQTYPE-Query is received in any inbound DNS message with an OpCode
-   other than QUERY (0) the server MUST return a FORMERR response.
+   The choice of when a client implementation should attempt to coalesce
+   queries for multiple QTYPEs using this method is implementation
+   specific and not discussed further herein.
+
+3.3.  Server Request Parsing
+
+   If an MQTYPE-Query option is received in any inbound DNS message with
+   an OpCode other than QUERY (0) the server MUST return a FORMERR
+   response.
 
    A server that receives an MQTYPE-Response option in any inbound DNS
    message MUST return a FORMERR response.
@@ -187,17 +197,21 @@ Table of Contents
    question is a non-data RRTYPE (e.g. ANY, AXFR, etc.) the server MUST
    return a FORMERR response.
 
+   If the QT list in an MQTYPE-Query option is empty the server MUST
+   return a FORMERR response.
+
    If any invalid QTx is received in the query (e.g. one corresponding
    to a Meta RRTYPE) the server MUST return a FORMERR response.
 
    If any duplicate QTx (or one duplicating the primary QTYPE field) is
    contained in a query the server MUST return a FORMERR response.
 
-3.2.2.  Response Generation
+3.4.  Server Response Generation
 
    A conforming server that receives an MQTYPE-Query option in a query
    MUST return an MQTYPE-Response option in its response, even if that
-   response is truncated (TC=1).
+   response is truncated (TC=1).  This is necessary to indicate that the
+   server does support this extension.
 
    The server MUST first start constructing a response for the primary
    (QNAME, QCLASS, QTYPE) tuple specified in the Question section per
@@ -211,7 +225,7 @@ Table of Contents
    After the initial response is prepared, the server MUST attempt to
    combine the responses for individual (QNAME, QCLASS, QTx)
    combinations into the response for the first query.  If a recursive
-   server does not yet have those responses available it MUST first make
+   server does not yet have those responses available it MAY first make
    appropriate outbound queries to populate its caches.
 
    For each individual combination the server MUST evaluate the
@@ -240,7 +254,7 @@ Table of Contents
    TYPE12345) combination on apex where TYPE12345 is not present.
 
    Handling of an MQTYPE-Query option MUST NOT itself trigger a
-   truncated response.  If message size (or other) limits do not allow
+   truncated response.  If response size (or other) limits do not allow
    all of the data obtained by querying for an additional QTx to be
    included in the final response in their entirety (i.e. as complete
    RRsets) then the server MUST NOT include the respective QTx in the
@@ -248,56 +262,66 @@ Table of Contents
    combinations.
 
    If all RRs for a single QTx combination fit into the message then the
-   server MUST include the respective QTx in the MQTYPE-Response
+   server MUST then include the respective QTx in the MQTYPE-Response
    option's list to indicate that the given query type was completely
    processed.
 
-3.3.  Client Response Processing
+   Note that it is possible for the resulting MQTYPE-Response option to
+   contain an empty list, but as described above the option MUST still
+   be returned.
 
-   Recursive resolvers MAY use this method to obtain multiple records
-   from an authoritative server.  For the purposes of Section 5.4.1 of
-   [RFC2181] any authoritative answers received MUST be ranked the same
-   as the answer for the primary question.
+3.5.  Client Response Processing
 
    If the response to a query containing an MQTYPE-Query option does not
    contain an MQTYPE-Response option, or if it erroneously contains an
    MQTYPE-Query option, the client MUST treat the response as if this
-   option is unsupported by the server and SHOULD process the response
-   as if the MQTYPE-Query option had not been used.
+   option is unsupported by the server and MUST process the primary
+   response as if the MQTYPE-Query option had not been used.
+
+   In the above case, or if the server generates a FORMERR response, the
+   client MUST issue additional standalone queries (e.g. without using
+   the MQTYPE-Query option) for all QTYPEs for which an answer is still
+   required.
 
    If the MQTYPE-Response option is present more than once or if a QTx
    value is duplicated (or duplicates the primary QTYPE field) the
-   client MUST treat the answer as invalid (equivalent to FORMERR)
+   client MUST treat the answer as invalid (equivalent to FORMERR).
 
    The Question section and the list of types present in the MQTYPE-
    Response option indicates the list of (QNAME, QCLASS, qtypes)
-   combinations which are completely contained within the received
-   response.  The answers to all query combinations share the same RCODE
-   and all other flags.
+   combinations which are completely answered and contained within the
+   received response.  The answers to all query combinations share the
+   same RCODE and all other flags.
 
    All RRs required by existing DNS specifications are expected to be
    present in the respective sections of the DNS message, including
    proofs of nonexistence where required.  The client MUST NOT rely on
    any particular order of RRs in the message sections.
 
+   For the purposes of Section 5.4.1 of [RFC2181] any authoritative
+   answers received MUST be ranked the same as the answer for the
+   primary question.
+
    Clients MUST take into account that individual RRs might originate
    from different DNS zones and that proofs of non-existence might have
    been produced by different signers.
 
    Absence of QTx values which were requested by client but are not
-   present in MQTYPE-Response option indicates that:
+   present in the MQTYPE-Response option indicates that:
 
-   *  the server was unwilling to process the request (e.g. because a
-      limit was exceeded), and/or
+   *  (for responses from recursive servers) that the server does not
+      have any records for that QTx value in cache, and/or
 
    *  the individual responses could not be combined into one message
       because of RCODE or other flag mismatches, and/or
 
-   *  the message size limit would be exceeded
+   *  the server was unwilling to process the request (e.g. because a
+      limit was exceeded), and/or
 
-   The client SHOULD subsequently initiate standalone queries (e.g.
-   without using the MQTYPE-Query option) for any QTx value which was
-   requested but is missing in the response.
+   *  the response size limit would be exceeded
+
+   The client MUST subsequently initiate separate standalone queries for
+   all QTx values for which an answer is still required.
 
 4.  Security Considerations
 
@@ -306,10 +330,17 @@ Table of Contents
 
    It should however be noted that this method does increase the
    potential amplification factor when the DNS protocol is used as a
-   vector for a denial of service attack.
+   vector for a denial of service attack.  A further risk is being able
+   to maliciously cause recursive servers to perform large amounts of
+   additional work.
 
-   Implementors SHOULD allow operators to configure limits on the number
-   of QTx values specified and/or the resulting response size.
+   Implementors SHOULD therefore allow operators to configure limits on
+   the number of QTx values specified and/or the resulting response
+   size.  The recommended values of those limits will depend on the
+   environment in which this specification is used.  In public DNS it is
+   expected that a limit of four QTx values would be appropriate, but
+   when used with DNS-SD or within private networks higher limits would
+   be acceptable.
 
 5.  IANA Considerations
 
@@ -384,6 +415,10 @@ Informative References
    [RFC6762]  Cheshire, S. and M. Krochmal, "Multicast DNS", RFC 6762,
               DOI 10.17487/RFC6762, February 2013,
               <https://www.rfc-editor.org/rfc/rfc6762>.
+
+   [RFC6763]  Cheshire, S. and M. Krochmal, "DNS-Based Service
+              Discovery", RFC 6763, DOI 10.17487/RFC6763, February 2013,
+              <https://www.rfc-editor.org/rfc/rfc6763>.
 
    [RFC8482]  Abley, J., Gudmundsson, O., Majkowski, M., and E. Hunt,
               "Providing Minimal-Sized Responses to DNS Queries That

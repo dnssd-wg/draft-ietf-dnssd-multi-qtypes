@@ -20,14 +20,14 @@ specified in the question section of a DNS QUERY (OpCode=0).
     Python 3.12.12
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
-    intervaltree 3.1.0
+    intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 5.3.1
-    platformdirs 4.5.0
+    lxml 6.0.2
+    platformdirs 4.5.1
     pycountry 24.6.1
-    PyYAML 6.0.2
+    PyYAML 6.0.3
     requests 2.32.5
-    wcwidth 0.2.14
+    wcwidth 0.3.0
 -->
 <link href="draft-ietf-dnssd-multi-qtypes.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -568,6 +568,7 @@ aside, blockquote {
 }
 blockquote {
   margin: 1em 0;
+  border-left: 2px var(--pilcrow-strong) solid;
 }
 cite {
   display: block;
@@ -638,7 +639,7 @@ a.pilcrow {
   }
 }
 @media not print {
-  :hover > a.pilcrow {
+  :hover > a.pilcrow, a.pilcrow:focus {
     opacity: 1;
   }
   a.pilcrow[href]:hover {
@@ -1046,11 +1047,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">DNS Multiple QTYPEs</td>
-<td class="right">November 2025</td>
+<td class="right">January 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Bellis</td>
-<td class="center">Expires 29 May 2026</td>
+<td class="center">Expires 3 August 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1063,12 +1064,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-dnssd-multi-qtypes-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-25" class="published">25 November 2025</time>
+<time datetime="2026-01-30" class="published">30 January 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-05-29">29 May 2026</time></dd>
+<dd class="expires"><time datetime="2026-08-03">3 August 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1120,7 +1121,7 @@ specified in the question section of a DNS QUERY (OpCode=0).<a href="#section-ab
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 29 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 3 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1129,7 +1130,7 @@ specified in the question section of a DNS QUERY (OpCode=0).<a href="#section-ab
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2025 IETF Trust and the persons identified as the
+            Copyright (c) 2026 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1162,18 +1163,16 @@ specified in the question section of a DNS QUERY (OpCode=0).<a href="#section-ab
                 <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-multiple-qtype-edns-options" class="internal xref">Multiple QTYPE EDNS Options Format</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
-                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-server-handling" class="internal xref">Server Handling</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2.2.1">
-                    <p id="section-toc.1-1.3.2.2.2.1.1"><a href="#section-3.2.1" class="auto internal xref">3.2.1</a>.  <a href="#name-request-parsing" class="internal xref">Request Parsing</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2.2.2">
-                    <p id="section-toc.1-1.3.2.2.2.2.1"><a href="#section-3.2.2" class="auto internal xref">3.2.2</a>.  <a href="#name-response-generation" class="internal xref">Response Generation</a></p>
-</li>
-                </ul>
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-client-request-generation" class="internal xref">Client Request Generation</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
-                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-client-response-processing" class="internal xref">Client Response Processing</a></p>
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-server-request-parsing" class="internal xref">Server Request Parsing</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-server-response-generation" class="internal xref">Server Response Generation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
+                <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-client-response-processing" class="internal xref">Client Response Processing</a></p>
 </li>
             </ul>
 </li>
@@ -1246,7 +1245,8 @@ EDNS options verbatim.<a href="#section-1-5" class="pilcrow">¶</a></p>
 stub resolver to recursive servers, and from recursive resolvers to
 authoritative servers. It does not apply to Multicast DNS queries
 <span>[<a href="#RFC6762" class="cite xref">RFC6762</a>]</span>, which are already designed to allow requesting multiple
-records in a single query.<a href="#section-1-6" class="pilcrow">¶</a></p>
+records in a single query, but is applicable to DNS-Based Service
+Discovery (DNS-SD) <span>[<a href="#RFC6763" class="cite xref">RFC6763</a>]</span>.<a href="#section-1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="terminology-used-in-this-document">
@@ -1322,138 +1322,156 @@ per <span>[<a href="#RFC6891" class="cite xref">RFC6891</a>]</span>, followed by
             </svg><a href="#section-3.1-6.1" class="pilcrow">¶</a>
 </div>
 </div>
-<p id="section-3.1-7">A (potentially empty) list of 2-octet fields in network order (MSB
-first) each specifying a DNS RRTYPE that must be for a data RRTYPE as
-described in Section 3.1 of <span>[<a href="#RFC6895" class="cite xref">RFC6895</a>]</span>.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
+<p id="section-3.1-7">A list of 2-octet fields in network order (MSB first) each specifying a
+DNS RRTYPE that must be for a data RRTYPE as described in Section 3.1 of
+<span>[<a href="#RFC6895" class="cite xref">RFC6895</a>]</span>.<a href="#section-3.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="server-handling">
+<div id="client-request-generation">
 <section id="section-3.2">
-        <h3 id="name-server-handling">
-<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-server-handling" class="section-name selfRef">Server Handling</a>
+        <h3 id="name-client-request-generation">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-client-request-generation" class="section-name selfRef">Client Request Generation</a>
         </h3>
-<div id="request-parsing">
-<section id="section-3.2.1">
-          <h4 id="name-request-parsing">
-<a href="#section-3.2.1" class="section-number selfRef">3.2.1. </a><a href="#name-request-parsing" class="section-name selfRef">Request Parsing</a>
-          </h4>
-<p id="section-3.2.1-1">If MQTYPE-Query is received in any inbound DNS message with an OpCode
-other than QUERY (0) the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-2">A server that receives an MQTYPE-Response option in any inbound DNS
-message <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.2.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-3">A server that receives more than one MQTYPE-Query option in a query <span class="bcp14">MUST</span>
-return a FORMERR response.<a href="#section-3.2.1-3" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-4">If an MQTYPE-Query option is received in a query that contains no primary
-question (i.e. QDCOUNT=0) the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.2.1-4" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-5">If an MQTYPE-Query option is received in a query where the primary question
-is a non-data RRTYPE (e.g. ANY, AXFR, etc.) the server <span class="bcp14">MUST</span> return a FORMERR
-response.<a href="#section-3.2.1-5" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-6">If any invalid QTx is received in the query (e.g. one corresponding to a
-Meta RRTYPE) the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.2.1-6" class="pilcrow">¶</a></p>
-<p id="section-3.2.1-7">If any duplicate QTx (or one duplicating the primary QTYPE field) is
-contained in a query the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.2.1-7" class="pilcrow">¶</a></p>
+<p id="section-3.2-1">DNS clients implementing this specification <span class="bcp14">MUST</span> generate packets that
+conform to the server request parsing rules described immediately below.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">The choice of when a client implementation should attempt to coalesce
+queries for multiple QTYPEs using this method is implementation specific
+and not discussed further herein.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="response-generation">
-<section id="section-3.2.2">
-          <h4 id="name-response-generation">
-<a href="#section-3.2.2" class="section-number selfRef">3.2.2. </a><a href="#name-response-generation" class="section-name selfRef">Response Generation</a>
-          </h4>
-<p id="section-3.2.2-1">A conforming server that receives an MQTYPE-Query option in a query <span class="bcp14">MUST</span>
+<div id="server-request-parsing">
+<section id="section-3.3">
+        <h3 id="name-server-request-parsing">
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-server-request-parsing" class="section-name selfRef">Server Request Parsing</a>
+        </h3>
+<p id="section-3.3-1">If an MQTYPE-Query option is received in any inbound DNS message with an
+OpCode other than QUERY (0) the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2">A server that receives an MQTYPE-Response option in any inbound DNS
+message <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.3-3">A server that receives more than one MQTYPE-Query option in a query <span class="bcp14">MUST</span>
+return a FORMERR response.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3-4">If an MQTYPE-Query option is received in a query that contains no primary
+question (i.e. QDCOUNT=0) the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
+<p id="section-3.3-5">If an MQTYPE-Query option is received in a query where the primary question
+is a non-data RRTYPE (e.g. ANY, AXFR, etc.) the server <span class="bcp14">MUST</span> return a FORMERR
+response.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
+<p id="section-3.3-6">If the QT list in an MQTYPE-Query option is empty the server <span class="bcp14">MUST</span> return
+a FORMERR response.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
+<p id="section-3.3-7">If any invalid QTx is received in the query (e.g. one corresponding to a
+Meta RRTYPE) the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.3-7" class="pilcrow">¶</a></p>
+<p id="section-3.3-8">If any duplicate QTx (or one duplicating the primary QTYPE field) is
+contained in a query the server <span class="bcp14">MUST</span> return a FORMERR response.<a href="#section-3.3-8" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="server-response-generation">
+<section id="section-3.4">
+        <h3 id="name-server-response-generation">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-server-response-generation" class="section-name selfRef">Server Response Generation</a>
+        </h3>
+<p id="section-3.4-1">A conforming server that receives an MQTYPE-Query option in a query <span class="bcp14">MUST</span>
 return an MQTYPE-Response option in its response, even if that response
-is truncated (TC=1).<a href="#section-3.2.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.2.2-2">The server <span class="bcp14">MUST</span> first start constructing a response for the primary
+is truncated (TC=1).  This is necessary to indicate that the server does
+support this extension.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">The server <span class="bcp14">MUST</span> first start constructing a response for the primary
 (QNAME, QCLASS, QTYPE) tuple specified in the Question section per
 the existing DNS sections.  The RCODE and all other flags (e.g. AA,
-AD, etc) <span class="bcp14">MUST</span> be determined at this time.<a href="#section-3.2.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.2.2-3">If this initial response results in truncation (TC=1) then the
+AD, etc) <span class="bcp14">MUST</span> be determined at this time.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.4-3">If this initial response results in truncation (TC=1) then the
 additional queries specified in the MQTYPE-Query option <span class="bcp14">MUST NOT</span> be
-processed.<a href="#section-3.2.2-3" class="pilcrow">¶</a></p>
-<p id="section-3.2.2-4">After the initial response is prepared, the server <span class="bcp14">MUST</span> attempt to
+processed.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+<p id="section-3.4-4">After the initial response is prepared, the server <span class="bcp14">MUST</span> attempt to
 combine the responses for individual (QNAME, QCLASS, QTx) combinations
 into the response for the first query.  If a recursive server does
-not yet have those responses available it <span class="bcp14">MUST</span> first make appropriate
-outbound queries to populate its caches.<a href="#section-3.2.2-4" class="pilcrow">¶</a></p>
-<p id="section-3.2.2-5">For each individual combination the server <span class="bcp14">MUST</span> evaluate the resulting
+not yet have those responses available it <span class="bcp14">MAY</span> first make appropriate
+outbound queries to populate its caches.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
+<p id="section-3.4-5">For each individual combination the server <span class="bcp14">MUST</span> evaluate the resulting
 RCODE and other flags and check that they all match the values generated
-from the primary query.<a href="#section-3.2.2-5" class="pilcrow">¶</a></p>
-<p id="section-3.2.2-6">If any mismatch is detected the mismatching additional response <span class="bcp14">MUST NOT</span>
+from the primary query.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
+<p id="section-3.4-6">If any mismatch is detected the mismatching additional response <span class="bcp14">MUST NOT</span>
 be included in the final combined response and its QTx value <span class="bcp14">MUST NOT</span> be
-included in the MQTYPE-Response option's list.  This might happen, for example,
-if the primary query resulted in a NOERROR response but a QTx query
-resulted in a SERVFAIL, or if the primary response has AA=0 but a QTx
-response has AA=1, such as might happen if the NS and DS records were
-both requested at the parent side of a zone cut.<a href="#section-3.2.2-6" class="pilcrow">¶</a></p>
-<p id="section-3.2.2-7">The server <span class="bcp14">MUST</span> attempt to combine the remaining individual RRs into the
+included in the MQTYPE-Response option's list.  This might happen, for
+example, if the primary query resulted in a NOERROR response but a QTx
+query resulted in a SERVFAIL, or if the primary response has AA=0 but a
+QTx response has AA=1, such as might happen if the NS and DS records
+were both requested at the parent side of a zone cut.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
+<p id="section-3.4-7">The server <span class="bcp14">MUST</span> attempt to combine the remaining individual RRs into the
 same sections in which they would have appeared in a standalone query,
 i.e.  as if each combination had been "the question" per section 4.1 of
-<a href="#RFC1035" class="auto internal xref">RFC1035</a>.<a href="#section-3.2.2-7" class="pilcrow">¶</a></p>
-<p id="section-3.2.2-8">The server <span class="bcp14">MUST</span> detect duplicate RRs and keep only a single copy of each
+<a href="#RFC1035" class="auto internal xref">RFC1035</a>.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
+<p id="section-3.4-8">The server <span class="bcp14">MUST</span> detect duplicate RRs and keep only a single copy of each
 RR in its respective section.  Duplicates can occur e.g. in the Answer
 section if a CNAME chain is involved, or in the Authority section if
 multiple QTYPEs don't exist, etc.  Note that RRs can be legitimately
 duplicated in different sections, e.g. for the (SOA, TYPE12345)
-combination on apex where TYPE12345 is not present.<a href="#section-3.2.2-8" class="pilcrow">¶</a></p>
-<p id="section-3.2.2-9">Handling of an MQTYPE-Query option <span class="bcp14">MUST NOT</span> itself trigger a truncated
-response.  If message size (or other) limits do not allow all of the
+combination on apex where TYPE12345 is not present.<a href="#section-3.4-8" class="pilcrow">¶</a></p>
+<p id="section-3.4-9">Handling of an MQTYPE-Query option <span class="bcp14">MUST NOT</span> itself trigger a truncated
+response.  If response size (or other) limits do not allow all of the
 data obtained by querying for an additional QTx to be included in the
 final response in their entirety (i.e. as complete RRsets) then the
 server <span class="bcp14">MUST NOT</span> include the respective QTx in the MQTYPE-Response
-option's list and <span class="bcp14">MAY</span> stop processing further QTx combinations.<a href="#section-3.2.2-9" class="pilcrow">¶</a></p>
-<p id="section-3.2.2-10">If all RRs for a single QTx combination fit into the message then the
-server <span class="bcp14">MUST</span> include the respective QTx in the MQTYPE-Response option's list
-to indicate that the given query type was completely processed.<a href="#section-3.2.2-10" class="pilcrow">¶</a></p>
-</section>
-</div>
+option's list and <span class="bcp14">MAY</span> stop processing further QTx combinations.<a href="#section-3.4-9" class="pilcrow">¶</a></p>
+<p id="section-3.4-10">If all RRs for a single QTx combination fit into the message then the
+server <span class="bcp14">MUST</span> then include the respective QTx in the MQTYPE-Response
+option's list to indicate that the given query type was completely
+processed.<a href="#section-3.4-10" class="pilcrow">¶</a></p>
+<p id="section-3.4-11">Note that it is possible for the resulting MQTYPE-Response option to
+contain an empty list, but as described above the option <span class="bcp14">MUST</span> still be
+returned.<a href="#section-3.4-11" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="client-response-processing">
-<section id="section-3.3">
+<section id="section-3.5">
         <h3 id="name-client-response-processing">
-<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-client-response-processing" class="section-name selfRef">Client Response Processing</a>
+<a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-client-response-processing" class="section-name selfRef">Client Response Processing</a>
         </h3>
-<p id="section-3.3-1">Recursive resolvers <span class="bcp14">MAY</span> use this method to obtain multiple records from
-an authoritative server.  For the purposes of Section 5.4.1 of
-<span>[<a href="#RFC2181" class="cite xref">RFC2181</a>]</span> any authoritative answers received <span class="bcp14">MUST</span> be ranked the same
-as the answer for the primary question.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
-<p id="section-3.3-2">If the response to a query containing an MQTYPE-Query option does not
+<p id="section-3.5-1">If the response to a query containing an MQTYPE-Query option does not
 contain an MQTYPE-Response option, or if it erroneously contains an
 MQTYPE-Query option, the client <span class="bcp14">MUST</span> treat the response as if this
-option is unsupported by the server and <span class="bcp14">SHOULD</span> process the response as
-if the MQTYPE-Query option had not been used.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
-<p id="section-3.3-3">If the MQTYPE-Response option is present more than once or if a QTx
+option is unsupported by the server and <span class="bcp14">MUST</span> process the primary
+response as if the MQTYPE-Query option had not been used.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
+<p id="section-3.5-2">In the above case, or if the server generates a FORMERR response, the
+client <span class="bcp14">MUST</span> issue additional standalone queries (e.g. without using the
+MQTYPE-Query option) for all QTYPEs for which an answer is still
+required.<a href="#section-3.5-2" class="pilcrow">¶</a></p>
+<p id="section-3.5-3">If the MQTYPE-Response option is present more than once or if a QTx
 value is duplicated (or duplicates the primary QTYPE field) the client
-<span class="bcp14">MUST</span> treat the answer as invalid (equivalent to FORMERR)<a href="#section-3.3-3" class="pilcrow">¶</a></p>
-<p id="section-3.3-4">The Question section and the list of types present in the
+<span class="bcp14">MUST</span> treat the answer as invalid (equivalent to FORMERR).<a href="#section-3.5-3" class="pilcrow">¶</a></p>
+<p id="section-3.5-4">The Question section and the list of types present in the
 MQTYPE-Response option indicates the list of (QNAME, QCLASS, qtypes)
-combinations which are completely contained within the received
-response.  The answers to all query combinations share the same RCODE
-and all other flags.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
-<p id="section-3.3-5">All RRs required by existing DNS specifications are expected to be
+combinations which are completely answered and contained within the
+received response.  The answers to all query combinations share the same
+RCODE and all other flags.<a href="#section-3.5-4" class="pilcrow">¶</a></p>
+<p id="section-3.5-5">All RRs required by existing DNS specifications are expected to be
 present in the respective sections of the DNS message, including proofs
 of nonexistence where required. The client <span class="bcp14">MUST NOT</span> rely on any
-particular order of RRs in the message sections.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
-<p id="section-3.3-6">Clients <span class="bcp14">MUST</span> take into account that individual RRs might originate from
+particular order of RRs in the message sections.<a href="#section-3.5-5" class="pilcrow">¶</a></p>
+<p id="section-3.5-6">For the purposes of Section 5.4.1 of <span>[<a href="#RFC2181" class="cite xref">RFC2181</a>]</span> any authoritative
+answers received <span class="bcp14">MUST</span> be ranked the same as the answer for the primary
+question.<a href="#section-3.5-6" class="pilcrow">¶</a></p>
+<p id="section-3.5-7">Clients <span class="bcp14">MUST</span> take into account that individual RRs might originate from
 different DNS zones and that proofs of non-existence might have been
-produced by different signers.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
-<p id="section-3.3-7">Absence of QTx values which were requested by client but are not present
-in MQTYPE-Response option indicates that:<a href="#section-3.3-7" class="pilcrow">¶</a></p>
+produced by different signers.<a href="#section-3.5-7" class="pilcrow">¶</a></p>
+<p id="section-3.5-8">Absence of QTx values which were requested by client but are not present
+in the MQTYPE-Response option indicates that:<a href="#section-3.5-8" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.3-8.1">
-            <p id="section-3.3-8.1.1">the server was unwilling to process the request (e.g. because a limit
-was exceeded), and/or<a href="#section-3.3-8.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-3.5-9.1">
+            <p id="section-3.5-9.1.1">(for responses from recursive servers) that the server does not have
+any records for that QTx value in cache, and/or<a href="#section-3.5-9.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.3-8.2">
-            <p id="section-3.3-8.2.1">the individual responses could not be combined into one message
-because of RCODE or other flag mismatches, and/or<a href="#section-3.3-8.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.5-9.2">
+            <p id="section-3.5-9.2.1">the individual responses could not be combined into one message
+because of RCODE or other flag mismatches, and/or<a href="#section-3.5-9.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-3.3-8.3">
-            <p id="section-3.3-8.3.1">the message size limit would be exceeded<a href="#section-3.3-8.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.5-9.3">
+            <p id="section-3.5-9.3.1">the server was unwilling to process the request (e.g. because a limit
+was exceeded), and/or<a href="#section-3.5-9.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.5-9.4">
+            <p id="section-3.5-9.4.1">the response size limit would be exceeded<a href="#section-3.5-9.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.3-9">The client <span class="bcp14">SHOULD</span> subsequently initiate standalone queries (e.g. without
-using the MQTYPE-Query option) for any QTx value which was requested but
-is missing in the response.<a href="#section-3.3-9" class="pilcrow">¶</a></p>
+<p id="section-3.5-10">The client <span class="bcp14">MUST</span> subsequently initiate separate standalone queries for
+all QTx values for which an answer is still required.<a href="#section-3.5-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1467,9 +1485,14 @@ is missing in the response.<a href="#section-3.3-9" class="pilcrow">¶</a></p>
 properties of the DNS protocol itself.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <p id="section-4-2">It should however be noted that this method does increase the potential
 amplification factor when the DNS protocol is used as a vector for a
-denial of service attack.<a href="#section-4-2" class="pilcrow">¶</a></p>
-<p id="section-4-3">Implementors <span class="bcp14">SHOULD</span> allow operators to configure limits on the number of
-QTx values specified and/or the resulting response size.<a href="#section-4-3" class="pilcrow">¶</a></p>
+denial of service attack.  A further risk is being able to maliciously
+cause recursive servers to perform large amounts of additional work.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-3">Implementors <span class="bcp14">SHOULD</span> therefore allow operators to configure limits on the
+number of QTx values specified and/or the resulting response size.  The
+recommended values of those limits will depend on the environment in
+which this specification is used.  In public DNS it is expected that a
+limit of four QTx values would be appropriate, but when used with DNS-SD
+or within private networks higher limits would be acceptable.<a href="#section-4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
@@ -1579,6 +1602,10 @@ Cheshire, Esko Dijk, Ted Lemon, David Schinazi and Petr Spacek.<a href="#section
 <dt id="RFC6762">[RFC6762]</dt>
         <dd>
 <span class="refAuthor">Cheshire, S.</span> and <span class="refAuthor">M. Krochmal</span>, <span class="refTitle">"Multicast DNS"</span>, <span class="seriesInfo">RFC 6762</span>, <span class="seriesInfo">DOI 10.17487/RFC6762</span>, <time datetime="2013-02" class="refDate">February 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6762">https://www.rfc-editor.org/rfc/rfc6762</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6763">[RFC6763]</dt>
+        <dd>
+<span class="refAuthor">Cheshire, S.</span> and <span class="refAuthor">M. Krochmal</span>, <span class="refTitle">"DNS-Based Service Discovery"</span>, <span class="seriesInfo">RFC 6763</span>, <span class="seriesInfo">DOI 10.17487/RFC6763</span>, <time datetime="2013-02" class="refDate">February 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6763">https://www.rfc-editor.org/rfc/rfc6763</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8482">[RFC8482]</dt>
       <dd>
