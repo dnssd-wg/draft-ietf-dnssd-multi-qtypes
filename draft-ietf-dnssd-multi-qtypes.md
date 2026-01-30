@@ -255,7 +255,7 @@ produced by different signers.
 Absence of QTx values which were requested by client but are not present
 in the MQTYPE-Response option indicates that:
 
-- (for responses from recursive servers) that the server does not have
+- (for responses from recursive servers) the server does not have
 any records for that QTx value in cache, and/or
 
 - the individual responses could not be combined into one message
