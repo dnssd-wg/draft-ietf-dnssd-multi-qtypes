@@ -70,7 +70,8 @@ The specification described herein is applicable both for queries from a
 stub resolver to recursive servers, and from recursive resolvers to
 authoritative servers. It does not apply to Multicast DNS queries
 {{?RFC6762}}, which are already designed to allow requesting multiple
-records in a single query.
+records in a single query, but is applicable to DNS-Based Service
+Discovery (DNS-SD) {{?RFC6763}}.
 
 # Terminology used in this document
 
@@ -117,7 +118,7 @@ A list of 2-octet fields in network order (MSB first) each specifying a
 DNS RRTYPE that must be for a data RRTYPE as described in Section 3.1 of
 {{!RFC6895}}.
 
-## Client Request Processing
+## Client Request Generation
 
 DNS clients implementing this specification MUST generate packets that
 conform to the server request parsing rules described immediately below.
@@ -172,7 +173,7 @@ processed.
 After the initial response is prepared, the server MUST attempt to
 combine the responses for individual (QNAME, QCLASS, QTx) combinations
 into the response for the first query.  If a recursive server does
-not yet have those responses available it MUST first make appropriate
+not yet have those responses available it MAY first make appropriate
 outbound queries to populate its caches.
 
 For each individual combination the server MUST evaluate the resulting
@@ -200,7 +201,7 @@ duplicated in different sections, e.g. for the (SOA, TYPE12345)
 combination on apex where TYPE12345 is not present.
 
 Handling of an MQTYPE-Query option MUST NOT itself trigger a truncated
-response.  If message size (or other) limits do not allow all of the
+response.  If response size (or other) limits do not allow all of the
 data obtained by querying for an additional QTx to be included in the
 final response in their entirety (i.e. as complete RRsets) then the
 server MUST NOT include the respective QTx in the MQTYPE-Response
@@ -234,9 +235,9 @@ MUST treat the answer as invalid (equivalent to FORMERR).
 
 The Question section and the list of types present in the
 MQTYPE-Response option indicates the list of (QNAME, QCLASS, qtypes)
-combinations which are completely contained within the received
-response.  The answers to all query combinations share the same RCODE
-and all other flags.
+combinations which are completely answered and contained within the
+received response.  The answers to all query combinations share the same
+RCODE and all other flags.
 
 All RRs required by existing DNS specifications are expected to be
 present in the respective sections of the DNS message, including proofs
@@ -254,13 +255,16 @@ produced by different signers.
 Absence of QTx values which were requested by client but are not present
 in the MQTYPE-Response option indicates that:
 
-- the server was unwilling to process the request (e.g. because a limit
-was exceeded), and/or
+- (for responses from recursive servers) that the server does not have
+any records for that QTx value in cache, and/or
 
 - the individual responses could not be combined into one message
 because of RCODE or other flag mismatches, and/or
 
-- the message size limit would be exceeded
+- the server was unwilling to process the request (e.g. because a limit
+was exceeded), and/or
+
+- the response size limit would be exceeded
 
 The client MUST subsequently initiate separate standalone queries for
 all QTx values for which an answer is still required.
@@ -272,10 +276,15 @@ properties of the DNS protocol itself.
 
 It should however be noted that this method does increase the potential
 amplification factor when the DNS protocol is used as a vector for a
-denial of service attack.
+denial of service attack.  A further risk is being able to maliciously
+cause recursive servers to perform large amounts of additional work.
 
-Implementors SHOULD allow operators to configure limits on the number of
-QTx values specified and/or the resulting response size.
+Implementors SHOULD therefore allow operators to configure limits on the
+number of QTx values specified and/or the resulting response size.  The
+recommended values of those limits will depend on the environment in
+which this specification is used.  In public DNS it is expected that a
+limit of four QTx values would be appropriate, but when used with DNS-SD
+or within private networks higher limits would be acceptable.
 
 # IANA Considerations
 
