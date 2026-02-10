@@ -61,7 +61,7 @@ their choosing.
 This document provides a solution for those cases where only the QTYPE
 varies by specifying a new option for the Extension Mechanisms for DNS
 (EDNS) {{!RFC6891}} that contains an additional list of QTYPE values
-that a client wishes to receive in addition to the single
+that the client wishes to receive in addition to the single
 QTYPE appearing in the question section.  A different EDNS option is
 used in response packets as protection against DNS middleboxes that echo
 EDNS options verbatim.
@@ -118,9 +118,9 @@ OPTION-DATA: Option specific, as depicted in {{fig-qtx}}.
 ~~~
 {: #fig-qtx title="MQTYPE OPTION-DATA Format"}
 
-A list of 2-octet fields in network order (MSB first) each specifying a
+A list of 2-octet values in network order (MSB first) each specifying a
 DNS RRTYPE that must be for a data RRTYPE as described in
-{{Section 3.1 of !RFC6895}}. These are referred to as QTx in the following sections.
+{{Section 3.1 of !RFC6895}}.  Individual values from the list (with unspecified index "x") are referred to as QTx in the following sections.
 
 ## Client Request Generation
 
@@ -143,16 +143,16 @@ A server that receives more than one MQTYPE-Query option in a query MUST
 return a FORMERR response.
 
 If an MQTYPE-Query option is received in a query that contains no primary
-question (i.e., QDCOUNT=0) the server MUST return a FORMERR response.
+question (i.e. QDCOUNT=0) the server MUST return a FORMERR response.
 
 If an MQTYPE-Query option is received in a query where the primary question
-is a non-data RRTYPE (e.g., ANY and AXFR) the server MUST return a FORMERR
+is a non-data RRTYPE (e.g. ANY, AXFR) the server MUST return a FORMERR
 response.
 
 If the QT list in an MQTYPE-Query option is empty the server MUST return
 a FORMERR response.
 
-If any invalid QTx is received in the query (e.g., one corresponding to a
+If any invalid QTx is received in the query (e.g. one corresponding to a
 Meta RRTYPE) the server MUST return a FORMERR response.
 
 If any duplicate QTx (or one duplicating the primary QTYPE field) is
@@ -167,7 +167,7 @@ support this extension.
 
 The server MUST first start constructing a response for the primary
 (QNAME, QCLASS, QTYPE) tuple specified in the Question section per
-the existing DNS sections.  The RCODE and all other flags (e.g., AA and
+the existing DNS sections.  The RCODE and all other flags (such as AA or
 AD) MUST be determined at this time.
 
 If this initial response results in truncation (TC=1) then the
@@ -194,20 +194,20 @@ were both requested at the parent side of a zone cut.
 
 The server MUST attempt to combine the remaining individual RRs into the
 same sections in which they would have appeared in a standalone query,
-i.e.,  as if each combination had been "the question" per
+i.e. as if each combination had been "the question" per
 {{Section 4.1 of RFC1035}}.
 
 The server MUST detect duplicate RRs and keep only a single copy of each
-RR in its respective section.  Duplicates can occur, e.g., in the Answer
+RR in its respective section.  Duplicates can occur, for example, in the Answer
 section if a CNAME chain is involved, or in the Authority section if
 multiple QTYPEs don't exist, etc.  Note that RRs can be legitimately
-duplicated in different sections, e.g., for the (SOA, TYPE12345)
-combination on apex where TYPE12345 is not present.
+duplicated in different sections such as for the (SOA, TYPE12345)
+combination at a zone apex where TYPE12345 is not present.
 
 Handling of an MQTYPE-Query option MUST NOT itself trigger a truncated
 response.  If response size (or other) limits do not allow all of the
 data obtained by querying for an additional QTx to be included in the
-final response in their entirety (i.e., as complete RRsets) then the
+final response in their entirety (i.e. as complete RRsets) then the
 server MUST NOT include the respective QTx in the MQTYPE-Response
 option's list and MAY stop processing further QTx combinations.
 
@@ -229,7 +229,7 @@ option is unsupported by the server and MUST process the primary
 response as if the MQTYPE-Query option had not been used.
 
 In the above case, or if the server generates a FORMERR response, the
-client MUST issue additional standalone queries (e.g., without using the
+client MUST issue additional standalone queries (that is, without using the
 MQTYPE-Query option) for all QTYPEs for which an answer is still
 required.
 
@@ -265,7 +265,7 @@ any records for that QTx value in cache, and/or
 - the individual responses could not be combined into one message
 because of RCODE or other flag mismatches, and/or
 
-- the server was unwilling to process the request (e.g., because a limit
+- the server was unwilling to process the request (for example, because a limit
 was exceeded), and/or
 
 - the response size limit would be exceeded
