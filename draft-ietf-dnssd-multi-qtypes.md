@@ -133,30 +133,28 @@ and not discussed further herein.
 
 ## Server Request Parsing {#sec-server-request}
 
-If an MQTYPE-Query option is received in any inbound DNS message with an
-OpCode other than QUERY (0) the server MUST return a FORMERR response.
+In addition to the error cases discussion in Section 7 of {{RFC6891}},
+the server MUST return a FORMERR response if the server receives:
 
-A server that receives an MQTYPE-Response option in any inbound DNS
-message MUST return a FORMERR response.
+* An MQTYPE-Query option in any inbound DNS message with an
+OpCode other than QUERY (0).
 
-A server that receives more than one MQTYPE-Query option in a query MUST
-return a FORMERR response.
+* An MQTYPE-Response option in any inbound DNS message.
 
-If an MQTYPE-Query option is received in a query that contains no primary
-question (i.e. QDCOUNT=0) the server MUST return a FORMERR response.
+* More than one MQTYPE-Query option in a query.
 
-If an MQTYPE-Query option is received in a query where the primary question
-is a non-data RRTYPE (e.g. ANY, AXFR) the server MUST return a FORMERR
-response.
+* An MQTYPE-Query in a query that contains no primary
+question (i.e. QDCOUNT=0).
 
-If the QT list in an MQTYPE-Query option is empty the server MUST return
-a FORMERR response.
+* An MQTYPE-Query option in a query where the primary question
+is a non-data RRTYPE (e.g. ANY, AXFR).
 
-If any invalid QTx is received in the query (e.g. one corresponding to a
-Meta RRTYPE) the server MUST return a FORMERR response.
+* An MQTYPE-Query option with an empty QT list.
 
-If any duplicate QTx (or one duplicating the primary QTYPE field) is
-contained in a query the server MUST return a FORMERR response.
+* An invalid QTx (e.g. one corresponding to a Meta RRTYPE).
+
+* A duplicate QTx (or one duplicating the primary QTYPE field)
+in a query.
 
 ## Server Response Generation
 
