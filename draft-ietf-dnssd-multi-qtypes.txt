@@ -4,8 +4,8 @@
 
 DNSSD                                                          R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                         30 January 2026
-Expires: 3 August 2026
+Intended status: Standards Track                        11 February 2026
+Expires: 15 August 2026
 
 
                           DNS Multiple QTYPEs
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 August 2026.
+   This Internet-Draft will expire on 15 August 2026.
 
 Copyright Notice
 
@@ -69,7 +69,7 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction
-   2.  Terminology used in this document
+   2.  Terminology
    3.  Specification
      3.1.  Multiple QTYPE EDNS Options Format
      3.2.  Client Request Generation
@@ -93,22 +93,22 @@ Table of Contents
    A commonly requested DNS [STD13] feature is the ability to receive
    multiple related resource records (RRs) in a single DNS response.
 
-   For example, it may be desirable to receive the A, AAAA and HTTPS
-   records for a domain name together, rather than having to issue
-   multiple queries.
+   For example, it may be desirable to receive the A, AAAA, and HTTPS
+   RRs for a domain name together, rather than having to issue multiple
+   queries.
 
    The DNS wire protocol in theory supported having multiple questions
    in a single packet, but in practice this does not work.  In
    [RFC9619], RFC1035 is updated to only permit a single question in a
    QUERY (OpCode=0) request.
 
-   Sending QTYPE=ANY does not guarantee that all RRsets will be
-   returned.  [RFC8482] specifies that responders may return a single
-   RRset of their choosing.
+   Sending QTYPE=ANY does not guarantee that all resource record sets
+   (RRsets) will be returned.  Section 4.1 of [RFC8482] specifies that
+   responders may return a single RRset of their choosing.
 
    This document provides a solution for those cases where only the
    QTYPE varies by specifying a new option for the Extension Mechanisms
-   for DNS (EDNS [RFC6891]) that contains an additional list of QTYPE
+   for DNS (EDNS) [RFC6891] that contains an additional list of QTYPE
    values that the client wishes to receive in addition to the single
    QTYPE appearing in the question section.  A different EDNS option is
    used in response packets as protection against DNS middleboxes that
@@ -121,7 +121,7 @@ Table of Contents
    multiple records in a single query, but is applicable to DNS-Based
    Service Discovery (DNS-SD) [RFC6763].
 
-2.  Terminology used in this document
+2.  Terminology
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -129,12 +129,14 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
+   This document makes use of DNS terminology defined in [RFC9499].
+
 3.  Specification
 
 3.1.  Multiple QTYPE EDNS Options Format
 
-   The overall format of an EDNS option is shown for reference below,
-   per [RFC6891], followed by the option specific data:
+   The overall format of an EDNS option is shown for reference in
+   Figure 1, per [RFC6891], followed by the option specific data.
 
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
     0: |                          OPTION-CODE                          |
@@ -146,12 +148,14 @@ Table of Contents
        |                                                               |
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
+                     Figure 1: EDNS Option Format
+
    OPTION-CODE: MQTYPE-Query (20) in queries and MQTYPE-Response (21) in
    responses.
 
    OPTION-LENGTH: Size (in octets) of OPTION-DATA.
 
-   OPTION-DATA: Option specific, as below:
+   OPTION-DATA: Option specific, as depicted in Figure 2.
 
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
     0: |                              QT1                              |
@@ -163,15 +167,19 @@ Table of Contents
        |                              QTn                              |
        +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
-   A list of 2-octet fields in network order (MSB first) each specifying
+                 Figure 2: MQTYPE OPTION-DATA Format
+
+   A list of 2-octet values in network order (MSB first) each specifying
    a DNS RRTYPE that must be for a data RRTYPE as described in
-   Section 3.1 of [RFC6895].
+   Section 3.1 of [RFC6895].  Individual values from the list (with
+   unspecified index "x") are referred to as QTx in the following
+   sections.
 
 3.2.  Client Request Generation
 
    DNS clients implementing this specification MUST generate packets
-   that conform to the server request parsing rules described
-   immediately below.
+   that conform to the server request parsing rules described in
+   Section 3.3.
 
    The choice of when a client implementation should attempt to coalesce
    queries for multiple QTYPEs using this method is implementation
@@ -179,32 +187,28 @@ Table of Contents
 
 3.3.  Server Request Parsing
 
-   If an MQTYPE-Query option is received in any inbound DNS message with
-   an OpCode other than QUERY (0) the server MUST return a FORMERR
-   response.
+   In addition to the error cases discussion in Section 7 of [RFC6891],
+   the server MUST return a FORMERR response if the server receives:
 
-   A server that receives an MQTYPE-Response option in any inbound DNS
-   message MUST return a FORMERR response.
+   *  An MQTYPE-Query option in any inbound DNS message with an OpCode
+      other than QUERY (0).
 
-   A server that receives more than one MQTYPE-Query option in a query
-   MUST return a FORMERR response.
+   *  An MQTYPE-Response option in any inbound DNS message.
 
-   If an MQTYPE-Query option is received in a query that contains no
-   primary question (i.e. QDCOUNT=0) the server MUST return a FORMERR
-   response.
+   *  More than one MQTYPE-Query option in a query.
 
-   If an MQTYPE-Query option is received in a query where the primary
-   question is a non-data RRTYPE (e.g. ANY, AXFR, etc.) the server MUST
-   return a FORMERR response.
+   *  An MQTYPE-Query in a query that contains no primary question (i.e.
+      QDCOUNT=0).
 
-   If the QT list in an MQTYPE-Query option is empty the server MUST
-   return a FORMERR response.
+   *  An MQTYPE-Query option in a query where the primary question is a
+      non-data RRTYPE (e.g. ANY, AXFR).
 
-   If any invalid QTx is received in the query (e.g. one corresponding
-   to a Meta RRTYPE) the server MUST return a FORMERR response.
+   *  An MQTYPE-Query option with an empty QT list.
 
-   If any duplicate QTx (or one duplicating the primary QTYPE field) is
-   contained in a query the server MUST return a FORMERR response.
+   *  An invalid QTx (e.g. one corresponding to a Meta RRTYPE).
+
+   *  A duplicate QTx (or one duplicating the primary QTYPE field) in a
+      query.
 
 3.4.  Server Response Generation
 
@@ -215,8 +219,8 @@ Table of Contents
 
    The server MUST first start constructing a response for the primary
    (QNAME, QCLASS, QTYPE) tuple specified in the Question section per
-   the existing DNS sections.  The RCODE and all other flags (e.g. AA,
-   AD, etc) MUST be determined at this time.
+   the existing DNS sections.  The RCODE and all other flags (such as AA
+   or AD) MUST be determined at this time.
 
    If this initial response results in truncation (TC=1) then the
    additional queries specified in the MQTYPE-Query option MUST NOT be
@@ -243,15 +247,16 @@ Table of Contents
 
    The server MUST attempt to combine the remaining individual RRs into
    the same sections in which they would have appeared in a standalone
-   query, i.e.  as if each combination had been "the question" per
-   section 4.1 of RFC1035.
+   query, i.e. as if each combination had been "the question" per
+   Section 4.1 of [RFC1035].
 
    The server MUST detect duplicate RRs and keep only a single copy of
-   each RR in its respective section.  Duplicates can occur e.g. in the
-   Answer section if a CNAME chain is involved, or in the Authority
-   section if multiple QTYPEs don't exist, etc.  Note that RRs can be
-   legitimately duplicated in different sections, e.g. for the (SOA,
-   TYPE12345) combination on apex where TYPE12345 is not present.
+   each RR in its respective section.  Duplicates can occur, for
+   example, in the Answer section if a CNAME chain is involved, or in
+   the Authority section if multiple QTYPEs don't exist, etc.  Note that
+   RRs can be legitimately duplicated in different sections such as for
+   the (SOA, TYPE12345) combination at a zone apex where TYPE12345 is
+   not present.
 
    Handling of an MQTYPE-Query option MUST NOT itself trigger a
    truncated response.  If response size (or other) limits do not allow
@@ -262,12 +267,12 @@ Table of Contents
    combinations.
 
    If all RRs for a single QTx combination fit into the message then the
-   server MUST then include the respective QTx in the MQTYPE-Response
+   server MUST include the respective QTx in the MQTYPE-Response
    option's list to indicate that the given query type was completely
    processed.
 
    Note that it is possible for the resulting MQTYPE-Response option to
-   contain an empty list, but as described above the option MUST still
+   contain an empty list, but as described above the option must still
    be returned.
 
 3.5.  Client Response Processing
@@ -279,9 +284,9 @@ Table of Contents
    response as if the MQTYPE-Query option had not been used.
 
    In the above case, or if the server generates a FORMERR response, the
-   client MUST issue additional standalone queries (e.g. without using
-   the MQTYPE-Query option) for all QTYPEs for which an answer is still
-   required.
+   client MUST issue additional standalone queries (that is, without
+   using the MQTYPE-Query option) for all QTYPEs for which an answer is
+   still required.
 
    If the MQTYPE-Response option is present more than once or if a QTx
    value is duplicated (or duplicates the primary QTYPE field) the
@@ -306,7 +311,7 @@ Table of Contents
    from different DNS zones and that proofs of non-existence might have
    been produced by different signers.
 
-   Absence of QTx values which were requested by client but are not
+   Absence of QTx values which were requested by the client but are not
    present in the MQTYPE-Response option indicates that:
 
    *  (for responses from recursive servers) the server does not have
@@ -315,8 +320,8 @@ Table of Contents
    *  the individual responses could not be combined into one message
       because of RCODE or other flag mismatches, and/or
 
-   *  the server was unwilling to process the request (e.g. because a
-      limit was exceeded), and/or
+   *  the server was unwilling to process the request (for example,
+      because a limit was exceeded), and/or
 
    *  the response size limit would be exceeded
 
@@ -330,7 +335,7 @@ Table of Contents
 
    It should however be noted that this method does increase the
    potential amplification factor when the DNS protocol is used as a
-   vector for a denial of service attack.  A further risk is being able
+   vector for a denial-of-service attack.  A further risk is being able
    to maliciously cause recursive servers to perform large amounts of
    additional work.
 
@@ -344,8 +349,9 @@ Table of Contents
 
 5.  IANA Considerations
 
-   IANA has assigned the following in the "DNS EDNS0 Option Codes (OPT)"
-   registry:
+   IANA has assigned the following values in the "DNS EDNS0 Option Codes
+   (OPT)" registry within "Domain Name System (DNS) Parameters" registry
+   group:
 
             +=======+=================+==========+===========+
             | Value | Name            | Status   | Reference |
@@ -355,7 +361,7 @@ Table of Contents
             | 21    | MQTYPE-Response | Optional | RFC TBD   |
             +-------+-----------------+----------+-----------+
 
-                       Table 1: EDNS Option Numbers
+                   Table 1: MQTYPE EDNS Option Numbers
 
 Acknowledgements
 
@@ -425,6 +431,10 @@ Informative References
               Have QTYPE=ANY", RFC 8482, DOI 10.17487/RFC8482, January
               2019, <https://www.rfc-editor.org/rfc/rfc8482>.
 
+   [RFC9499]  Hoffman, P. and K. Fujiwara, "DNS Terminology", BCP 219,
+              RFC 9499, DOI 10.17487/RFC9499, March 2024,
+              <https://www.rfc-editor.org/rfc/rfc9499>.
+
 Appendix A.   Examples
 
    The examples below are shown as might be reported by the ISC Dig
@@ -467,7 +477,7 @@ A.1.  Stub query for A with MQType-Query for AAAA + HTTPS
    [...].example.com.  2830  IN  NSEC3   [...] A TXT AAAA RRSIG
    [...].example.com.  2830  IN  RRSIG   NSEC3 [...]
 
-                         Figure 1: A + AAAA + HTTPS
+                         Figure 3: A + AAAA + HTTPS
 
 A.2.  Stub query for DS with MQType-Query for DNSKEY
 
@@ -495,7 +505,7 @@ A.2.  Stub query for DS with MQType-Query for DNSKEY
    example.com.      86185   IN  DS      370 13 2 [...]
    example.com.      86185   IN  RRSIG   DS [...] com. [...]
 
-                         Figure 2: Stub DS + DNSKEY
+                         Figure 4: Stub DS + DNSKEY
 
 A.3.  Recursive query for DS with MQType-Query for NS
 
@@ -523,7 +533,7 @@ A.3.  Recursive query for DS with MQType-Query for NS
    example.com.      86185   IN  DS      370 13 2 [...]
    example.com.      86185   IN  RRSIG   DS [...] com. [...]
 
-                        Figure 3: Recursive DS + NS
+                        Figure 5: Recursive DS + NS
 
 Author's Address
 
