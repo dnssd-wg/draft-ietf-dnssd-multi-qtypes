@@ -4,8 +4,8 @@
 
 DNSSD                                                          R. Bellis
 Internet-Draft                                                       ISC
-Intended status: Standards Track                        11 February 2026
-Expires: 15 August 2026
+Intended status: Standards Track                        27 February 2026
+Expires: 31 August 2026
 
 
                           DNS Multiple QTYPEs
@@ -50,7 +50,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 August 2026.
+   This Internet-Draft will expire on 31 August 2026.
 
 Copyright Notice
 
@@ -183,7 +183,12 @@ Table of Contents
 
    The choice of when a client implementation should attempt to coalesce
    queries for multiple QTYPEs using this method is implementation
-   specific and not discussed further herein.
+   specific and not discussed further herein.  However, careful
+   considerations should be taken into account when coalescing queries
+   on behalf of an application if such a feature is not explicitly
+   requested by the application.  How an application interacts with an
+   underlying name resolution library is internal to the implementation
+   and is thus out of scope.
 
 3.3.  Server Request Parsing
 
@@ -212,10 +217,11 @@ Table of Contents
 
 3.4.  Server Response Generation
 
-   A conforming server that receives an MQTYPE-Query option in a query
-   MUST return an MQTYPE-Response option in its response, even if that
-   response is truncated (TC=1).  This is necessary to indicate that the
-   server does support this extension.
+   A conforming server that receives an MQTYPE-Query option in a valid
+   query MUST return an MQTYPE-Response option in its response, even if
+   that response is truncated (TC=1).  This is necessary to indicate
+   that the server does support this extension.  Refer to Section 3.3
+   for invalid queries.
 
    The server MUST first start constructing a response for the primary
    (QNAME, QCLASS, QTYPE) tuple specified in the Question section per
