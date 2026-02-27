@@ -129,11 +129,15 @@ conform to the server request parsing rules described in {{sec-server-request}}.
 
 The choice of when a client implementation should attempt to coalesce
 queries for multiple QTYPEs using this method is implementation specific
-and not discussed further herein.
+and not discussed further herein. However, careful considerations should
+be taken into account when coalescing queries on behalf of an application
+if such a feature is not explicitly requested by the application. How
+an application interacts with an underlying name resolution library is
+internal to the implementation and is thus out of scope.
 
 ## Server Request Parsing {#sec-server-request}
 
-In addition to the error cases discussion in Section 7 of {{RFC6891}},
+In addition to the error cases discussion in {{Section 7 of RFC6891}},
 the server MUST return a FORMERR response if the server receives:
 
 * An MQTYPE-Query option in any inbound DNS message with an
@@ -158,10 +162,10 @@ in a query.
 
 ## Server Response Generation
 
-A conforming server that receives an MQTYPE-Query option in a query MUST
-return an MQTYPE-Response option in its response, even if that response
-is truncated (TC=1).  This is necessary to indicate that the server does
-support this extension.
+A conforming server that receives an MQTYPE-Query option in a valid query MUST
+return an MQTYPE-Response option in its response, even if
+that response is truncated (TC=1). This is necessary to indicate that the server does
+support this extension. Refer to {{sec-server-request}} for invalid queries.
 
 The server MUST first start constructing a response for the primary
 (QNAME, QCLASS, QTYPE) tuple specified in the Question section per
